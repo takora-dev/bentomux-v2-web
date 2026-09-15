@@ -23,13 +23,15 @@ export function CommandBlock({
         className,
       )}
     >
-      <div className="flex items-start gap-x-4">
-        <code className="font-mono text-mono text-text">
-          <span aria-hidden="true" className="text-text-subtle">
-            ${" "}
-          </span>
-          {command}
-        </code>
+      <div className="flex items-center gap-x-4">
+        <div className="min-w-0 flex-1 overflow-x-auto">
+          <code className="font-mono text-mono text-text whitespace-nowrap">
+            <span aria-hidden="true" className="text-text-subtle">
+              ${" "}
+            </span>
+            {command}
+          </code>
+        </div>
         <CopyButton text={command} />
       </div>
       {note ? <span className="text-caption text-text-subtle">{note}</span> : null}
