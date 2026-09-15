@@ -83,7 +83,7 @@ export function Hero() {
 
           <p className="max-w-[52ch] text-body-lg text-text-muted">{hero.subheadline}</p>
 
-          <CommandBlock command={command.command} note={hero.quickStartNote} className="w-fit max-w-[52ch]" />
+          <CommandBlock command={command.command} note={hero.quickStartNote} className="w-fit max-w-[52ch] self-start" />
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-caption text-text-subtle">
             <span>
