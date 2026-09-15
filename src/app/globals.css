@@ -240,35 +240,3 @@
   }
 }
 
-/* -------------------------------------------------------------- hero mark
-   The hero's watermark breathes: the glyph slowly swells and brightens, then
-   settles. Only `opacity` and `transform` move, so MOT-001 holds, and the
-   `*` rule above collapses it to nothing under `prefers-reduced-motion`
-   (MOT-003) — with `animation-fill-mode: none` the mark falls back to the
-   static `opacity-[0.22]` on the element, which is the approved look.
-
-   The element is animated, never its wrapper: `opacity` or `transform` on an
-   ancestor would isolate the group and the mark's `mix-blend-screen` would
-   stop reaching the canvas, leaving the black plate visible as a square.
-
-   Duration is 30 × `--duration-base` (≈6s), and the swing is wide enough to
-   read: the first build breathed over 9s between 0.14 and 0.22, which on a
-   dark canvas through `mix-blend-screen` was slow enough and shallow enough
-   that the motion was easy to miss entirely. A loop near a second would read
-   as a pulse and pull the eye off the headline, so 6s is the compromise. */
-@keyframes hero-mark-breathe {
-  0%,
-  100% {
-    opacity: 0.15;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.27;
-    transform: scale(1.02);
-  }
-}
-
-.hero-mark {
-  animation: hero-mark-breathe calc(var(--duration-base) * 30) var(--ease-standard) infinite;
-}

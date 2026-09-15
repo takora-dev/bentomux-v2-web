@@ -18,18 +18,20 @@ export function CommandBlock({
   return (
     <div
       className={cx(
-        "flex flex-wrap items-center gap-x-4 gap-y-3 rounded-sm border border-border",
+        "flex flex-col gap-2 rounded-sm border border-border",
         "bg-surface px-4 py-3",
         className,
       )}
     >
-      <code className="font-mono text-mono text-text">
-        <span aria-hidden="true" className="text-text-subtle">
-          ${" "}
-        </span>
-        {command}
-      </code>
-      <CopyButton text={command} />
+      <div className="flex items-center gap-x-4">
+        <code className="font-mono text-mono text-text">
+          <span aria-hidden="true" className="text-text-subtle">
+            ${" "}
+          </span>
+          {command}
+        </code>
+        <CopyButton text={command} />
+      </div>
       {note ? <span className="text-caption text-text-subtle">{note}</span> : null}
     </div>
   );

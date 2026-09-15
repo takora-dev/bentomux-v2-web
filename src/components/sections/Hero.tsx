@@ -31,10 +31,29 @@ export function Hero() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="scroll-mt-nav px-4 pt-12 pb-14 lg:px-10 lg:pt-20 lg:pb-20"
+      className="scroll-mt-nav relative px-4 pt-12 pb-14 lg:px-10 lg:pt-20 lg:pb-20"
     >
-      <div className="mx-auto grid w-full max-w-[var(--container-max)] gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,18rem)] lg:items-start lg:gap-16 xl:grid-cols-[minmax(0,1fr)_minmax(0,30rem)]">
-        <div className="flex w-full max-w-[62ch] flex-col gap-6">
+      {/* Silhouette mark — large ghosted logo anchored to the right, sits
+          behind all content via z-index. No animation per user request. */}
+      <div
+        className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block"
+        aria-hidden="true"
+      >
+        <Image
+          src={logo.src}
+          alt=""
+          width={logo.width}
+          height={logo.height}
+          className="h-full w-full object-contain object-right opacity-[0.07] mix-blend-screen"
+          style={{
+            maskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 35%)",
+          }}
+        />
+      </div>
+
+      <div className="relative mx-auto w-full max-w-[var(--container-max)]">
+        <div className="flex w-full flex-col gap-6">
           <p>
             {/* The ribbon points at the published releases, not at the install
                 band: the beta is out, so the status sentence has a destination
@@ -56,15 +75,15 @@ export function Hero() {
             {hero.eyebrow}
           </p>
 
-          <h1 id="hero-heading" className="text-display">
+          <h1 id="hero-heading" className="text-display max-w-[20ch]">
             {before}
             <em className="not-italic text-accent">{hero.headlineEmphasis}</em>
             {after}
           </h1>
 
-          <p className="text-body-lg text-text-muted">{hero.subheadline}</p>
+          <p className="max-w-[52ch] text-body-lg text-text-muted">{hero.subheadline}</p>
 
-          <CommandBlock command={command.command} note={hero.quickStartNote} />
+          <CommandBlock command={command.command} note={hero.quickStartNote} className="w-fit max-w-[52ch]" />
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-caption text-text-subtle">
             <span>
@@ -77,47 +96,6 @@ export function Hero() {
               all install methods →
             </a>
           </div>
-        </div>
-
-        {/* The mark, decorative: the bar and the footer already name the logo
-            with alt text, so this copy carries none and is dropped below `lg`,
-            where the text column owns the width.
-
-            Treatment: `screen` sinks the mark's black plate into the canvas and
-            leaves only the glyph; the radial mask fades the glyph's edges out
-            instead of cutting a rectangle, so there is no hard boundary to
-            read as an image box; `mt-24` aligns the mark's top with the h1
-            (badge + eyebrow + two `--space-6` gaps), not the column's middle.
-            The track is 22rem at `lg` and 30rem at `xl`, where the container is
-            at full width and there is room: even at 30rem the 1fr text track
-            still clears 62ch, so the headline wraps exactly as before.
-            `opacity` is the presence knob — raise it if the mark reads too
-            faint, drop it if it starts competing with the headline. The glow
-            behind is one accent-tint radial, the same alpha the selection
-            colour uses; its `-inset-8` bleed stays inside the 40px desktop
-            gutter (LAY-002). `hero-mark` breathes the glyph (keyframes in
-            `globals.css`); it is a documented exception to MOT-002, which
-            otherwise forbids ambient motion, and it collapses under
-            `prefers-reduced-motion` per MOT-003. The mark's source is 1024px
-            wide so the 480px `xl` track clears 2× on a retina screen — a
-            narrower raster is why this watermark looked soft. */}
-        <div
-          className="relative hidden self-start lg:mt-24 lg:block xl:mt-0"
-          aria-hidden="true"
-        >
-          <div className="absolute -inset-8 bg-[radial-gradient(circle,var(--color-accent-tint),transparent_70%)]" />
-          <Image
-            src={logo.src}
-            alt=""
-            width={logo.width}
-            height={logo.height}
-            sizes="(min-width: 1280px) 480px, (min-width: 1024px) 288px, 100vw"
-            className="hero-mark relative h-auto w-full opacity-[0.22] mix-blend-screen"
-            style={{
-              maskImage: "radial-gradient(circle at 50% 48%, #000 38%, transparent 76%)",
-              WebkitMaskImage: "radial-gradient(circle at 50% 48%, #000 38%, transparent 76%)",
-            }}
-          />
         </div>
       </div>
     </section>
