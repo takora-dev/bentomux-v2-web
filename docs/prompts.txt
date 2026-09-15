@@ -1,0 +1,114 @@
+# Implementation Prompts: Bentomux Landing Page
+
+**Document:** Prompt Record | **Derived From:** SoT artifacts under `docs/` | **Status:** Active | **Last Updated:** 2026-09-13
+
+> Record of the prompts used to drive implementation. These are **execution instructions only**. No business requirement, feature description, validation rule, UI specification, or application logic appears here — every one of those lives in the Source of Truth. The prompts tell the model *where to look*, never *what to build*.
+
+## 1. How to Use This File
+
+The implementation prompts are deliberately small and few. If a prompt has to explain a feature, the explanation is in the wrong place: it belongs in an artifact. Before running any prompt below, confirm the artifact it references is validated — otherwise the model implements an unvalidated fact and the traceability chain breaks at its first link.
+
+**Working folder for a fresh implementation:** `bentomux_web_<model_name>/` (for example `bentomux_web_gpt/`). Keep the folder name in the prompt so implementations from different models sit side by side and can be compared against the same SoT.
+
+## 2. Preconditions
+
+- [ ] `docs/srs.md`, `docs/information_architecture.md`, `docs/design_system.md` validated
+- [ ] `docs/user_flows/` — `index.md` plus all eight flows validated
+- [ ] `docs/data_model.md` validated
+- [ ] `docs/system_logics/` — `index.md` plus all eight contracts validated
+- [ ] `docs/test_cases.md` reviewed — these are the acceptance bar, not the prompts
+- [ ] Sibling application repository available read-only at `../Bentomux-v2` (brand assets, palette source, product facts)
+- [ ] `NEXT_PUBLIC_SITE_URL` decided and available for the environment
+
+## 3. The Prompts
+
+### Prompt 1 — Scaffold
+
+```
+Create a blank starter app using the latest Next.js (App Router, TypeScript, strict mode) in the 'bentomux_web_<model_name>' folder.
+No component library. Tailwind CSS only. No backend and no database.
+```
+
+Nothing about the product, the pages, or the design appears here. The scaffold is decided by `CON-001` and the styling decision in `docs/design_system.md`, both of which the model reads in Prompt 2.
+
+### Prompt 2 — Pages and navigation
+
+```
+Based on @docs/design_system.md and @docs/information_architecture.md, create the application's pages and navigation structure.
+Use the brand assets from @../Bentomux-v2/assets (logo and hero screenshot).
+```
+
+The information architecture fixes the nine sections, their order, the navigation anchors, the two pages, and the catch-all. The design system fixes the tokens, type scale, spacing, radii, motion, and breakpoints. Neither needs restating.
+
+### Prompt 3 — Functionality
+
+```
+Implement the application's functionality in detail based on docs/user_flows/* and docs/system_logics/*.
+Implement the single endpoint POST /api/waitlist for real, to the contract in docs/system_logics/sys_uc_002.md.
+It is part of this deliverable, not an external backend: no mocked, stubbed, or faked handler in the shipped code.
+Source all content from the typed modules described in docs/data_model.md. Do not put content strings in components.
+```
+
+`docs/data_model.md` is named explicitly because it is what turns "no content in components" into a mechanical rule rather than a style preference: every entity has a file, and `SiteConfig` owns every URL so no address is written twice.
+
+**Why this prompt does not say "using dummy API calls".** The original practice case kept that clause because its application sat in front of a backend that did not exist yet, so every call had to be faked. That condition does not hold here. Seven of the eight use cases make no HTTP request at all — every contract except `sys_uc_002.md` states "None — this use case makes no HTTP request" — and the eighth is the only endpoint in the system, implemented as a route handler in this same repository (`CON-001`). There is nothing external to fake. Worse, the clause would invite exactly the wrong implementation: a handler that returns success unconditionally cannot satisfy the contract, because the contract's difficulty *is* its failure surface. Thirteen cases cover it, and twelve of them exercise a path a stub would collapse — the intentionally identical response for a repeat address (`BR-004.5`) and a honeypot hit (`BR-004.6`), the `400`/`403`/`405`/`429`/`502` status codes, the ten-second upstream timeout, and the rule that no subscriber address reaches a log (`NFR-002.4`).
+
+**The missing-credential seam is already specified, so no stub is needed to develop locally.** With `RESEND_API_KEY` unset or rejected, the contract's answer is `502` with `error: "upstream_unavailable"` (`sys_uc_002.md` §Status Codes). Developing without the key is therefore a supported, testable state rather than a reason to fake the upstream. Stubbing belongs to the test harness (`docs/test_plan.md` §4.2), where the client is replaced to provoke duplicate, timeout, and error responses on demand — not to the application.
+
+### Prompt 4 — Verification (optional, run after the build)
+
+```
+Run the cases in @docs/test_cases.md against the implementation and fill in @docs/test_execution_sheet.md.
+For each failure, state whether the defect is in the implementation or in a Source of Truth.
+Do not edit code to make a test pass until that classification is recorded.
+```
+
+This prompt exists because the classification is the whole point of the workflow. A failing test is as likely to expose a wrong artifact as a wrong implementation, and the two demand opposite repairs.
+
+## 4. What the Prompts Deliberately Omit
+
+No prompt states a feature, a business rule, a validation rule, an error status code, a colour, a typeface, a breakpoint, a section, an anchor name, an entity, a field, or a count. All of it is in the artifacts:
+
+| Detail | Lives in |
+|--------|----------|
+| What the product does, and the acceptance criteria for each capability | `docs/srs.md` |
+| Pages, section order, anchors, URL structure, responsive strategy | `docs/information_architecture.md` |
+| Tokens, type scale, spacing, radii, motion, component specifications, accessibility contract | `docs/design_system.md` |
+| Main, alternative, and exception flows per use case | `docs/user_flows/` |
+| Entities, fields, relationships, schemas, validation rules | `docs/data_model.md` |
+| Request and response shapes, status codes, client component contracts | `docs/system_logics/` |
+| The acceptance bar | `docs/test_cases.md` |
+
+## 5. Prompt Log
+
+Record each prompt actually issued during implementation, so a later session can tell what was asked versus what was inferred. If a prompt was needed to explain a feature, that is a signal the artifact is incomplete — note it in the last column and fix the artifact.
+
+| # | Date | Model | Prompt (summary) | Artifacts referenced | Outcome | Artifact gap discovered? |
+|---|------|-------|------------------|----------------------|---------|--------------------------|
+| | | | | | | |
+
+## 6. Guardrails for the Implementing Session
+
+- **Do not invent product facts.** Counts, capabilities, and palette values come from `../Bentomux-v2` and are transcribed in `docs/data_model.md`. If a fact is missing, stop and add it to the artifact.
+- **Do not state a release date**, in any copy, in any language (`BR-006.4`).
+- **Do not write an install command by hand.** Every command in `SEC-006` is a transcription of a string that already exists in `../Bentomux-v2/installers/*` or its README install block; `docs/system_logics/sys_uc_003.md` and `docs/data_model.md` fix which strings and where they are rendered (`BR-005.1`).
+- **Do not advertise a package manager, tap, mirror, or CDN.** No Homebrew line, no winget, no Scoop, no third-party download page (`BR-005.3`, `BR-005.6`, `CON-015`).
+- **Do not state a version number, release date, or download size** outside the `vX.Y.Z` placeholder of the pin example (`BR-005.4`).
+- **Do not promise a release that does not resolve.** The install commands point at GitHub Releases; whether they resolve is a release precondition, not something to paper over with softer wording (`LP-007`).
+- **Do not state the project's licence from memory.** Read `licenseId` from the `LICENSE` file tracked on `master` of the application repository and state it plainly; link the licence file only while that file exists (`BR-009.1`, `BR-009.2`, `CON-013`).
+- **Do not describe the Herdr credit as a licence of this project, and do not claim the attribution duty is discharged.** Herdr is credited under its own licence; whether a `NOTICE` file exists is a release precondition (`BR-009.3`, `BR-009.6`, `FR-009.8`, `LP-002`).
+- **Do not add analytics, cookies, or third-party scripts** (`NFR-008.4`).
+- **Do not stub, mock, or fake the waitlist handler** in shipped code. Implement the real call to the Resend Contacts API; the upstream stub exists only in the test harness (`docs/test_plan.md` §4.2).
+- **Do not add a contact form.** Bugs go to Issues, questions to Discussions, private enquiries to `mailto:` (`BR-007.4`).
+- **Do not show a star, issue, or contributor count** (`BR-007.3`).
+- **Do not imply every detected agent is configurable.** 21 detected, 9 configurable (`BR-003.3`).
+- **Do not paraphrase the upstream layout as brand.** The composition reference is layout and typography only; copy, imagery, tokens, and colour are Bentomux's own (`CON-010`).
+- **Style-only rule:** the visual guardrail is to match the composition *style*, never the words or images of the reference site.
+
+## 7. Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2026-09-13 | F. Jibran | Initial prompt record: four execution prompts plus the guardrail list. |
+| 1.1 | 2026-09-13 | F. Jibran | Prompt 3: dropped "using dummy API calls where needed" and replaced it with an instruction to implement `POST /api/waitlist` for real against `docs/system_logics/sys_uc_002.md`. Rationale recorded: seven of eight use cases make no HTTP request, and the single endpoint lives in this repository, so faking it would defeat the contract's failure surface. Added the matching guardrail and pointed stubbing at the test harness. |
+| 1.2 | 2026-09-13 | F. Jibran | Install section replaced the mock download surface, so the guardrails were rewritten to match: command transcription from the installer scripts, no package-manager channel, no version literal, `LP-007` as a release gate, and the licence rules restated against the tracked `LICENSE` file and the open `NOTICE` precondition. Corrected a sentence in Prompt 3 that read as though all eight contracts state that no HTTP request is made. |

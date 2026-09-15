@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+/* Token layer — docs/design_system.md §12 is the single source of token truth
+   (TOK-004). No tailwind.config.js duplicates these values.
+
+   Spacing deliberately uses Tailwind's default 0.25rem scale, which already
+   equals --space-1 … --space-32 in the design system (space-16 = 64px,
+   space-24 = 96px, space-32 = 128px). SPC-002 therefore means: only use the
+   steps that appear in that table. */
+
+@theme {
+  /* color — site chrome (dark) */
+  --color-canvas: #17181b;
+  --color-canvas-raised: #1c1e22;
+  --color-surface: #222428;
+  --color-surface-hover: #282b30;
+  --color-content: #17181b;
+  --color-text: #e8eaed;
+  --color-text-muted: #a6abb3;
+  --color-text-subtle: #71767e;
+  --color-accent: #4c8ef9;
+  --color-accent-hover: #6ba1fb;
+  --color-accent-strong: #7cacff;
+  --color-accent-tint: rgba(76, 142, 249, 0.16);
+  --color-border: #2c2f34;
+  --color-border-strong: #3b3f45;
+  --color-tint: rgba(255, 255, 255, 0.07);
+  --color-danger: #e5534b;
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+
+  /* typography */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+
+  --text-display: clamp(2.75rem, 7vw, 6.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--font-weight: 900;
+  --text-display--letter-spacing: -0.045em;
+  --text-display-sm: clamp(2rem, 4.5vw, 3.25rem);
+  --text-display-sm--line-height: 1;
+  --text-display-sm--font-weight: 900;
+  --text-display-sm--letter-spacing: -0.035em;
+  --text-heading: clamp(1.375rem, 2vw, 1.75rem);
+  --text-heading--line-height: 1.15;
+  --text-heading--font-weight: 800;
+  --text-heading--letter-spacing: -0.02em;
+  --text-heading-sm: 1.125rem;
+  --text-heading-sm--line-height: 1.3;
+  --text-heading-sm--font-weight: 700;
+  --text-heading-sm--letter-spacing: -0.01em;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+  --text-caption--font-weight: 500;
+  --text-caption--letter-spacing: 0.01em;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.4;
+  --text-overline--font-weight: 600;
+  --text-overline--letter-spacing: 0.08em;
+  --text-mono: 0.8125rem;
+  --text-mono--line-height: 1.6;
+
+  /* radii — lg and xl are larger than Tailwind's defaults on purpose (§6.2) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+  --radius-full: 999px;
+
+  /* layout */
+  --spacing-nav: 64px;
+  --container-max: 1200px;
+
+  /* motion */
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-base: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+:root {
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 28px;
+  --ring-focus: 2px solid var(--color-accent);
+  --border-hairline: 1px solid var(--color-border);
+  --border-emphasis: 1px solid var(--color-border-strong);
+  --nav-background: rgba(23, 24, 27, 0.72);
+}
+
+@layer base {
+  html {
+    /* NAV-008 / LAY-005: anchored headings clear the sticky bar. */
+    scroll-padding-top: var(--spacing-nav);
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: var(--ring-focus);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-tint);
+    color: var(--color-text);
+  }
+}
+
+/* MOT-003: every duration collapses under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------ mobile menu
+   §7 tokens `--duration-base` and `--duration-slow` for the menu enter, which
+   the first build never wired up: the panel appeared with no transition.
+   `@starting-style` gives the enter without a script. Properties stay inside
+   MOT-001 (opacity + transform) and MOT-003 collapses the duration. Going from
+   open to closed is still instant — an exit transition needs script, and the
+   closed panel is not rendered for the transition to run on. Where
+   `@starting-style` is unsupported the panel simply appears, as before. */
+.menu-panel {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-standard);
+}
+
+@starting-style {
+  .menu-panel {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ---------------------------------------------------------------- install
+   §9.9. Native radios drive panel visibility with a sibling selector, so the
+   checked input — not a script — decides which panel is shown (FR-005.6).
+   The inputs are the first children of the fieldset so `~` reaches both the
+   label row and the panel list. */
+
+.install-option-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.install-option-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding-inline: --spacing(4);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--duration-instant) var(--ease-out),
+    color var(--duration-instant) var(--ease-out);
+}
+
+.install-option-label:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.install-panel {
+  display: none;
+}
+
+#install-tab-macos:checked ~ .install-tabs .install-option-label[for="install-tab-macos"],
+#install-tab-linux:checked ~ .install-tabs .install-option-label[for="install-tab-linux"],
+#install-tab-windows:checked ~ .install-tabs .install-option-label[for="install-tab-windows"] {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+#install-tab-macos:focus-visible ~ .install-tabs .install-option-label[for="install-tab-macos"],
+#install-tab-linux:focus-visible ~ .install-tabs .install-option-label[for="install-tab-linux"],
+#install-tab-windows:focus-visible ~ .install-tabs .install-option-label[for="install-tab-windows"] {
+  outline: var(--ring-focus);
+  outline-offset: 2px;
+}
+
+#install-tab-macos:checked ~ .install-panels #install-panel-macos,
+#install-tab-linux:checked ~ .install-panels #install-panel-linux,
+#install-tab-windows:checked ~ .install-panels #install-panel-windows {
+  display: block;
+}
+
+/* Below md the three options stack, so the label row becomes a column. */
+@media (width < 48rem) {
+  .install-option-label {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ----------------------------------------------------------- copy control
+   CPY-003: with no clipboard API the control cannot do its job, so it is not
+   offered. The command itself stays selectable text either way. */
+@media (scripting: none) {
+  .copy-control {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------- hero mark
+   The hero's watermark breathes: the glyph slowly swells and brightens, then
+   settles. Only `opacity` and `transform` move, so MOT-001 holds, and the
+   `*` rule above collapses it to nothing under `prefers-reduced-motion`
+   (MOT-003) — with `animation-fill-mode: none` the mark falls back to the
+   static `opacity-[0.22]` on the element, which is the approved look.
+
+   The element is animated, never its wrapper: `opacity` or `transform` on an
+   ancestor would isolate the group and the mark's `mix-blend-screen` would
+   stop reaching the canvas, leaving the black plate visible as a square.
+
+   Duration is 30 × `--duration-base` (≈6s), and the swing is wide enough to
+   read: the first build breathed over 9s between 0.14 and 0.22, which on a
+   dark canvas through `mix-blend-screen` was slow enough and shallow enough
+   that the motion was easy to miss entirely. A loop near a second would read
+   as a pulse and pull the eye off the headline, so 6s is the compromise. */
+@keyframes hero-mark-breathe {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.27;
+    transform: scale(1.02);
+  }
+}
+
+.hero-mark {
+  animation: hero-mark-breathe calc(var(--duration-base) * 30) var(--ease-standard) infinite;
+}
