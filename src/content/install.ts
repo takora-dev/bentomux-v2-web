@@ -1,16 +1,26 @@
 /* InstallOption, InstallCommand, InstallerStep, ManualDownloadList —
    ENT-005, ENT-010, ENT-011, ENT-012.
 
-   Every command is transcribed from takora-dev/bentomux-v2, byte for byte
-   (BR-005.1). `sourcePath` records where it was copied from so a drift check
-   is a string comparison. The only composed command is the pin example
+   Commands are written against the site's own short links (`/install.sh`,
+   `/install.ps1`, `/install.cmd`), which `next.config.ts` maps to
+   `../Bentomux-v2/installers/*` with a 307. They are still copies of strings published by the application
+   repository — the short form is what its README install block carries — so
+   BR-005.1 stays a string comparison. `sourcePath` records which script a
+   command ends up executing.
+
+   The base URL is `site.siteUrl`, so the value of `NEXT_PUBLIC_SITE_URL` and
+   the host in that README block have to agree, or the copied command points at
+   a host that does not resolve. The only composed command is the pin example
    permitted by FR-005.12; its manifest URL is the installer's own default with
    `/latest/download/` replaced by `/download/vX.Y.Z/`. */
 
 import { invariant, requireCount, requireNonEmpty, requireUnique } from "./validate";
 import { site } from "./site";
 
-const RAW = "https://raw.githubusercontent.com/takora-dev/bentomux-v2/master/installers";
+/* The three short links, in one place so a command cannot name a fourth. */
+const INSTALL_SH = `${site.siteUrl}/install.sh`;
+const INSTALL_PS1 = `${site.siteUrl}/install.ps1`;
+const INSTALL_CMD = `${site.siteUrl}/install.cmd`;
 const MANIFEST = `https://github.com/takora-dev/bentomux-v2/releases/download/vX.Y.Z/latest.json`;
 
 export type InstallPanelId = "macos" | "linux" | "windows";
@@ -67,7 +77,7 @@ export const installCommands: readonly InstallCommand[] = [
   {
     id: "macos-install",
     panelId: "macos",
-    command: `curl -fsSL ${RAW}/install.sh | sh`,
+    command: `curl -fsSL ${INSTALL_SH} | sh`,
     kind: "install",
     caption: "macOS install command — downloads the .dmg and installs the .app bundle",
     requiresRoot: false,
@@ -77,7 +87,7 @@ export const installCommands: readonly InstallCommand[] = [
   {
     id: "pin-example",
     panelId: "macos",
-    command: `curl -fsSL ${RAW}/install.sh | BENTOMUX_MANIFEST_URL=${MANIFEST} sh`,
+    command: `curl -fsSL ${INSTALL_SH} | BENTOMUX_MANIFEST_URL=${MANIFEST} sh`,
     kind: "pin",
     caption: "Pinned install of one release, using the same installer",
     requiresRoot: false,
@@ -87,7 +97,7 @@ export const installCommands: readonly InstallCommand[] = [
   {
     id: "linux-install",
     panelId: "linux",
-    command: `curl -fsSL ${RAW}/install.sh | sh`,
+    command: `curl -fsSL ${INSTALL_SH} | sh`,
     kind: "install",
     caption: "Linux install command — installs the AppImage and a desktop entry",
     requiresRoot: false,
@@ -97,7 +107,7 @@ export const installCommands: readonly InstallCommand[] = [
   {
     id: "linux-deb",
     panelId: "linux",
-    command: `curl -fsSL ${RAW}/install.sh | sh -s -- --deb`,
+    command: `curl -fsSL ${INSTALL_SH} | sh -s -- --deb`,
     kind: "fallback",
     caption: "Linux install command for the .deb package, through apt/dpkg (needs root)",
     requiresRoot: true,
@@ -107,7 +117,7 @@ export const installCommands: readonly InstallCommand[] = [
   {
     id: "windows-install",
     panelId: "windows",
-    command: `powershell -ExecutionPolicy Bypass -c "irm ${RAW}/install.ps1 | iex"`,
+    command: `powershell -ExecutionPolicy Bypass -c "irm ${INSTALL_PS1} | iex"`,
     kind: "install",
     caption: "Windows install command — runs the PowerShell installer",
     requiresRoot: false,
@@ -117,7 +127,7 @@ export const installCommands: readonly InstallCommand[] = [
   {
     id: "windows-cmd-fallback",
     panelId: "windows",
-    command: `curl.exe -fsSLo install.cmd ${RAW}/install.cmd && install.cmd && del install.cmd`,
+    command: `curl.exe -fsSLo install.cmd ${INSTALL_CMD} && install.cmd && del install.cmd`,
     kind: "fallback",
     caption: "Windows fallback for environments that block PowerShell from the internet",
     requiresRoot: false,
@@ -200,12 +210,27 @@ for (const command of installCommands) {
   requireNonEmpty(command.command, `installCommands.${command.id}.command`);
   invariant(
     !command.command.includes("\n"),
-    `[content] installCommands.${command.id}.command must be a single line (CMD-003)`,
+    `installCommands.${command.id}.command must be a single line (CMD-003)`,
   );
   invariant(
     installOptions.some((option) => option.id === command.panelId),
     `installCommands.${command.id} points at an unknown panel`,
   );
+}
+
+/* BR-005.2 (amended). The site's own origin is the only host added to the
+   permitted pair, and only as the redirect that stands in front of
+   `raw.githubusercontent.com` — no mirror, CDN or third-party download page
+   becomes representable. Without this every command could quietly name a host
+   the requirement forbids, which is what the amendment has to keep true. */
+const permittedCommandOrigins = [site.siteUrl, "https://github.com/takora-dev/bentomux-v2"];
+for (const command of installCommands) {
+  for (const url of command.command.match(/https?:\/\/[^\s"]+/g) ?? []) {
+    invariant(
+      permittedCommandOrigins.some((origin) => url.startsWith(origin)),
+      `installCommands.${command.id}.command names an unpermitted host: ${url} (BR-005.2)`,
+    );
+  }
 }
 requireCount(installOptions, 3, "installOptions");
 requireCount(installerSteps, 3, "installerSteps");

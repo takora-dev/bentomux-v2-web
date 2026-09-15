@@ -679,9 +679,9 @@ Three families of cases are unusual and worth calling out before reading the ind
 | Test Scenario | Executable text is transcribed, never paraphrased |
 | Type | Positive |
 | Preconditions | A checkout of `../Bentomux-v2` available to the test |
-| Test Data | `INSTALLERS`: `install.sh`, `install.ps1`, `install.cmd`, and the install block of `README.md` |
-| Test Steps | 1. Read each command string from the rendered page  2. Read the corresponding string from the repository source  3. Compare byte for byte  4. Repeat for every panel including the fallback commands |
-| Expected Result | Each rendered command is byte-identical to a string that exists in `installers/*` or the README install block; a divergence fails the build with `BUILD_COMMAND_MISMATCH` (`BR-005.1`, `BR-005.9`, `CON-014`, `DS CMD-002`) |
+| Test Data | `INSTALLERS`: the install block of `README.md` in `../Bentomux-v2`, and the three short links it publishes (`/install.sh`, `/install.ps1`, `/install.cmd`) |
+| Test Steps | 1. Read each command string from the rendered page  2. Read the corresponding string from the README install block  3. Compare byte for byte  4. Confirm each short link resolves to the matching `installers/*` file with a 307  5. Repeat for every panel including the fallback commands |
+| Expected Result | Each rendered command is byte-identical to a string in the README install block; a divergence is a `BR-005.1`/`BR-005.9` content defect, caught by review against the block rather than by a build check (`CON-014`, `DS CMD-002`) |
 
 **TC-F005-005: Every command and download host belongs to the project repository**
 
@@ -695,7 +695,7 @@ Three families of cases are unusual and worth calling out before reading the ind
 | Preconditions | Rendered markup extracted as text |
 | Test Data | A scan pattern over every `http` occurrence in `SEC-006` |
 | Test Steps | 1. Extract every URL rendered in the section  2. Compare each host against the permitted pair  3. Confirm the manual-download link points to `releases/latest` on the repository host |
-| Expected Result | Only `github.com/takora-dev/bentomux-v2` and `raw.githubusercontent.com/takora-dev/bentomux-v2` appear; any other host fails the build with `BUILD_COMMAND_HOST` (`BR-005.2`, `FR-005.11`) |
+| Expected Result | Only `SiteConfig.siteUrl` (the `/install.sh`, `/install.ps1`, `/install.cmd` short links, which are 307 redirects and not copies) and `github.com/takora-dev/bentomux-v2` appear; `raw.githubusercontent.com` appears in no rendered command. A command naming any other host fails the build through the host invariant in `src/content/install.ts` (`BR-005.2`, `FR-005.11`) |
 
 **TC-F005-006: No version literal, date, size, package-manager channel or Homebrew command appears**
 

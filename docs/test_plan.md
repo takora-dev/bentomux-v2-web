@@ -17,7 +17,7 @@ The system under test is one statically rendered Next.js site with a single serv
 - Verify each of the eight use cases completes per its user flow, including alternative and exception paths.
 - Verify the single endpoint `POST /api/waitlist` conforms to its UCIC contract: request shape, every reachable status code, and the deliberately indistinguishable success responses.
 - Verify the client-side contracts — install option group semantics, copy-control feedback, figure-band markup, the mock's keyboard semantics and reduced-motion behaviour, anchor resolution — which are the parts no HTTP test can reach.
-- Verify that every install command rendered in `SEC-006` is byte-identical to a string that already exists in the application repository, and that no version number is stated in prose.
+- Verify that every install command rendered in `SEC-006` is byte-identical to a string in the README install block of the application repository, that each short link it names resolves to the matching `installers/*` file, and that no version number is stated in prose.
 - Confirm every acceptance criterion listed in each user flow.
 - Confirm the 21-detected / 9-configurable agent claim and the figures the stat strip states against the application repository, since those are the facts most likely to drift.
 - Confirm that no claim is made about a release date, a downloadable artifact, or a licence state that the repository does not support.

@@ -333,7 +333,7 @@ Three shapes, all in `src/content/mock.ts`:
 - No module contains an absolute URL literal except `SiteConfig.siteUrl` (which reads from the environment) and the constant `SiteConfig` is built from (`REPOSITORY_URL`). Every other destination is either a path or a reference to a `SiteConfig` field (`BR-001.3`). `ENT-015` adds exactly one more literal, the GitHub API base it reads, and that URL is never rendered as a link.
 - No copy may state a release date, a delivery window, or an availability that is not committed (`BR-006.4`, `BR-002.3`).
 - `licenseId` must equal the licence declared in the application repository's `LICENSE` file. `MIT` is the correct value while that file holds the MIT licence, and any other value fails the build (`BR-009.1`, `CON-008`).
-- Every `InstallCommand.command` must appear character for character in the repository file named by its `sourcePath`. A composed command is permitted only for `kind = pin` (`BR-005.1`).
+- Every `InstallCommand.command` must appear character for character in the install block of `../Bentomux-v2/README.md`. A composed command is permitted only for `kind = pin` (`BR-005.1`). The commands name the site's own short links, so the comparison is against that block's short form and not against `installers/*` directly.
 - A module that fails its schema fails the build; it never renders a blank section (`NFR-006.3`).
 
 ### Agent Roster Rules
@@ -366,10 +366,10 @@ Three shapes, all in `src/content/mock.ts`:
 
 ### Install Rules
 
-- Every `InstallCommand.command` must equal a string that exists in the application repository. The only composed command is `kind = pin`, whose manifest URL must be the installer's own default with `/latest/download/` replaced by `/download/vX.Y.Z/` (`BR-005.1`, `FR-005.12`).
+- Every `InstallCommand.command` must equal a string that exists in the application repository's README install block, which publishes the site's short links. The only composed command is `kind = pin`, whose manifest URL must be the installer's own default with `/latest/download/` replaced by `/download/vX.Y.Z/` (`BR-005.1`, `FR-005.12`).
 - Exactly one `InstallOption` has `isDefault = true`, and it is `macos`, so the section renders a complete default state before any script runs (`FR-005.2`, `FR-005.6`).
 - `requiresRoot = true` is permitted only on the Linux `--deb` command (`BR-005.5`).
-- Only two hosts may appear anywhere in this module: `github.com/takora-dev/bentomux-v2` and `raw.githubusercontent.com/takora-dev/bentomux-v2`. No mirror, CDN, or package manager is representable (`BR-005.2`, `BR-005.3`).
+- Two hosts may appear anywhere in this module: `SiteConfig.siteUrl` for the `/install.sh`, `/install.ps1` and `/install.cmd` short links, and `github.com/takora-dev/bentomux-v2` for the pinned-manifest example. The site's origin is a 307 redirector and holds no copy of any installer, so it is not a mirror. No other host, CDN or package manager is representable (`BR-005.2`, `BR-005.3`).
 - No command, note or step may contain a version number, a release date, or a size. The only version literal in the module is the `vX.Y.Z` placeholder inside the pin command (`BR-005.4`).
 - The Homebrew cask line has no entity and must not be added while `brew info --cask takora-dev/tap/bentomux` does not resolve (`BR-005.6`, `CON-015`).
 - Linux is x86_64 only. No entry may claim or imply Apple Silicon or arm64 Linux support (`FR-005.13`, `BR-005.7`).
@@ -488,8 +488,8 @@ const body = await request.json();                 // { email: string; website?:
 | SiteConfig.licenseFilePublished | `true` permits the plain statement and a licence-file link; `false` selects the deferred sentence and suppresses the link | Build (schema refinement) + test case (`BR-009.2`) |
 | AgentRuntime.supportLevel | Enum, with the 9 / 21 / 1 count invariants | Build (schema refinement) (`BR-003.1`, `BR-003.2`, `BR-003.6`) |
 | InstallOption.isDefault | Exactly one `true`, and it must be `macos` | Build (schema refinement) (`FR-005.2`) |
-| InstallCommand.command | Appears character for character in the repository file named by `sourcePath` | Build (comparison against the application repository) + test case (`BR-005.1`) |
-| InstallCommand.command | No host outside the two permitted ones; no version literal except the `vX.Y.Z` placeholder in the `pin` entry; single line only | Build (schema pattern check) (`BR-005.2`, `BR-005.4`) |
+| InstallCommand.command | Appears character for character in the README install block of the application repository, which publishes the site's short links | Test case, by comparison against that block (`BR-005.1`, `BR-005.9`) |
+| InstallCommand.command | No host outside `SiteConfig.siteUrl` and the repository; no version literal except the `vX.Y.Z` placeholder in the `pin` entry; single line only | Build (host invariant in `src/content/install.ts`, `BR-005.2`) + test case (`BR-005.4`) |
 | InstallCommand.requiresRoot | `true` only on the Linux `--deb` command | Build (schema refinement) (`BR-005.5`) |
 | InstallerStep | Exactly three entries | Build (schema refinement) (`FR-005.10`) |
 | ManualDownloadList.formats | Exactly five entries, matching the artifact suffixes the build workflow produces | Build (schema) (`FR-005.11`) |

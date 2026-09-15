@@ -314,7 +314,7 @@ Budgets keep the page in one narrative register and prevent any section from bec
 - **Layout:** switcher above a single panel region; the panel is the dominant element; a command block scrolls horizontally within its own container instead of widening the page
 - **Default:** macOS is selected in the server-rendered HTML (`SRS FR-005.2`). A client script may preselect the visitor's platform, but must not override an explicit choice, change text, or shift layout (`SRS FR-005.4`)
 - **No-JS:** all three panels are present in the HTML and visibility is decided by CSS from the selected input, so every command is readable and selectable without script (`SRS FR-005.6`)
-- **Commands:** verbatim from `../Bentomux-v2/installers/*`. The pin example is the only composed command (`SRS BR-005.1`)
+- **Commands:** the site's short links — `<site>/install.sh`, `<site>/install.ps1`, `<site>/install.cmd` — quoted from the install block of `../Bentomux-v2/README.md`, each answered by a 307 to the matching `installers/*` script. The pin example is the only composed command (`SRS BR-005.1`, `BR-005.2`)
 - **Excluded:** the Homebrew line, while the cask does not resolve (`SRS BR-005.6`)
 - **SRS:** FR-005.1–FR-005.13, BR-005.1–BR-005.9
 

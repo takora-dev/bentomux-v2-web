@@ -68,14 +68,22 @@ function validateStaticHtml(html) {
   );
   check("TC-F005-001: macOS is the pre-checked option", /id="install-tab-macos"[^>]*checked/.test(html));
   check(
-    "TC-F005-004: the macOS command matches the repository source",
-    html.includes(
-      "curl -fsSL https://raw.githubusercontent.com/takora-dev/bentomux-v2/master/installers/install.sh | sh",
-    ),
+    "TC-F005-004: the macOS command points at the site's own short link",
+    /curl -fsSL https?:\/\/[^\s"<]+\/install\.sh \| sh/.test(html),
+  );
+  /* NEXT_PUBLIC_SITE_URL is inlined into the HTML at build time, so the host
+     cannot be asserted as a literal here the way it was while the command
+     named raw.githubusercontent.com. What is asserted instead is the part that
+     must not drift whichever host the build ran with. BR-005.2 (amended) allows
+     the site's origin and the repository, and nothing else. */
+  check(
+    "BR-005.2 (amended): no rendered command names a host outside the permitted pair",
+    !html.includes("raw.githubusercontent.com"),
   );
   check(
-    "TC-F005-009: the Windows fallback command is present",
-    html.includes("install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd"),
+    "TC-F005-009: the Windows commands use their short links",
+    html.includes("/install.ps1 | iex") &&
+      html.includes("/install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd"),
   );
   check(
     "TC-F002-001: the five capability rows render with their anchors",
