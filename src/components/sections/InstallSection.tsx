@@ -35,7 +35,7 @@ export function InstallSection() {
           intro={copy.intro}
         />
 
-        <fieldset className="install-switcher relative">
+        <fieldset className="install-switcher relative min-w-0 w-full">
           <legend className="sr-only">{installCopy.platformLegend}</legend>
 
           {installOptions.map((option) => (
@@ -66,7 +66,7 @@ export function InstallSection() {
               <div key={option.id} id={`install-panel-${option.id}`} className="install-panel">
                 <div className="flex flex-col gap-6">
                   {commandsForPanel(option.id).map((command) => (
-                    <figure key={command.id} aria-labelledby={`${command.id}-caption`}>
+                    <figure key={command.id} aria-labelledby={`${command.id}-caption`} className="min-w-0">
                       {command.kind === "pin" ? (
                         <p className="mb-2 text-caption text-text-subtle">
                           {installExtras.pinLabel}
