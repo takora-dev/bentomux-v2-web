@@ -2,7 +2,6 @@
    PAGE-003 rather than to an entity. Components read them from here, so no
    component holds a literal of its own (`IA XPG-001`, `NFR-006.6`). */
 
-import { navItems } from "./nav";
 import { site } from "./site";
 import { requireUnique } from "./validate";
 
@@ -32,14 +31,6 @@ export const headerCopy = {
  *  (FR-007.6). Screen-reader users learn about the new tab before activating. */
 export const opensInNewTab = " (opens in a new tab)";
 
-/** The anchor group of SEC-010, shared with the footer's own internal links. */
-export const productLinks: readonly FooterLink[] = navItems.map((item) => ({
-  id: item.id,
-  label: item.label,
-  href: item.href,
-  external: false,
-}));
-
 const projectLinks: readonly FooterLink[] = [
   { id: "repository", label: "Repository", href: site.repositoryUrl, external: true },
   { id: "releases", label: "Latest release", href: site.releasesLatestUrl, external: true },
@@ -62,16 +53,12 @@ const supportLinks: readonly FooterLink[] = [
   { id: "discussions", label: "Ask a question", href: site.discussionsUrl, external: true },
 ];
 
-/** SEC-010 — the columns. `showProductLinks` is false on the secondary routes,
- *  which are not the single-scroll page the anchors point into (XPG-002). */
-export function footerGroups(showProductLinks: boolean): readonly FooterGroup[] {
+/** SEC-010 — the columns. */
+export function footerGroups(): readonly FooterGroup[] {
   const groups: FooterGroup[] = [
     { id: "project", heading: "Project", links: projectLinks },
     { id: "support", heading: "Support", links: supportLinks },
   ];
-  if (showProductLinks) {
-    groups.unshift({ id: "product", heading: "Product", links: productLinks });
-  }
   for (const group of groups) {
     requireUnique(group.links, (link) => link.id, `footer.${group.id}.links`);
   }

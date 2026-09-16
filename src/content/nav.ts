@@ -21,8 +21,8 @@ export type NavItem = {
 };
 
 export const navItems: readonly NavItem[] = [
-  { id: "capabilities", label: "Capabilities", href: `#${anchors.capabilities}`, kind: "anchor" },
-  { id: "install", label: "Install", href: `#${anchors.install}`, kind: "anchor" },
+  { id: "docs", label: "Docs", href: "/docs", kind: "external" },
+  { id: "compare", label: "Compare", href: "/compare", kind: "external" },
 ] as const;
 
 export const navExternal: NavItem = {
@@ -33,10 +33,10 @@ export const navExternal: NavItem = {
 };
 
 export const navPrimary: NavItem = {
-  id: "download",
-  label: "Download",
-  href: site.releasesLatestUrl,
-  kind: "external",
+  id: "install",
+  label: "Install",
+  href: "#install",
+  kind: "anchor",
 };
 
 requireUnique(navItems, (item) => item.id, "navItems");

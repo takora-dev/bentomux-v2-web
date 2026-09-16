@@ -1,12 +1,11 @@
 import Link from "next/link";
 
 import { headerCopy, opensInNewTab } from "@/content/chrome";
-import { navExternal, navItems, navPrimary } from "@/content/nav";
+import { navItems, navPrimary } from "@/content/nav";
 import { site } from "@/content/site";
+import { fetchStarCount } from "@/content/stats";
 
-import { buttonClass } from "../ui/Button";
-import { cx } from "../ui/cx";
-import { ChevronIcon, GitHubIcon } from "../ui/icons";
+import { GitHubIcon } from "../ui/icons";
 import { Logo } from "./SkipLink";
 
 /**
@@ -26,93 +25,78 @@ import { Logo } from "./SkipLink";
  * which is stricter than the "hide the control, anchors live in the footer"
  * fallback the design system allows.
  */
-export function SiteHeader() {
+export async function SiteHeader() {
+  const stars = await fetchStarCount();
+  const starLabel = stars !== null ? stars.toLocaleString("en-US") : null;
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-[var(--nav-background)] backdrop-blur-[12px]">
-      <div className="mx-auto flex h-nav w-full max-w-[var(--container-max)] items-center gap-4 px-4 lg:px-10">
-        <Link
-          href="/"
-          aria-label={headerCopy.homeLabel}
-          className="flex items-center gap-2 rounded-sm"
-        >
-          <Logo height={24} className="flex items-center" />
-          {/* §10.2: wordmark is `--font-display` at 800 weight, beside the mark. */}
-          <span className="font-display text-heading-sm font-extrabold">{site.siteName}</span>
+    <header className="sticky top-0 z-50 h-[60px] border-b border-border bg-[var(--nav-background)] backdrop-blur-[12px]">
+      <nav
+        aria-label={headerCopy.navLabel}
+        className="mx-auto flex h-[60px] w-full max-w-[var(--layout-max)] items-center gap-6 px-4 lg:px-10"
+      >
+        <Link href="/" aria-label={headerCopy.homeLabel} className="flex items-center gap-2.5 rounded-sm">
+          <Logo height={25} className="flex items-center" />
+          <span className="font-display text-[20px] font-black tracking-[-0.045em] text-text">{site.siteName.toLowerCase()}</span>
         </Link>
-
-        <nav aria-label={headerCopy.navLabel} className="ml-auto hidden md:block">
-          <ul className="flex items-center gap-1">
-            {navItems.map((item) => (
-              <li key={item.id}>
-                <a href={item.href} className={buttonClass("ghost", "sm")}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
-            <li>
-              <a
-                href={navExternal.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonClass("ghost", "sm", "gap-1.5")}
-              >
-                <GitHubIcon className="size-4" />
-                {navExternal.label}
-                <span className="sr-only">{opensInNewTab}</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-        <a
-          href={navPrimary.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={buttonClass("primary", "sm", "ml-auto md:ml-0")}
-        >
-          {navPrimary.label}
-          <span className="sr-only">{opensInNewTab}</span>
-        </a>
+        <span className="flex-1" aria-hidden="true" />
+        <div className="hidden items-center gap-6 md:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="text-caption tracking-[0.07em] uppercase text-text-subtle hover:text-text"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <a
+            href={site.repositoryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Bentomux on GitHub"
+            className="inline-flex h-[30px] items-center gap-2 border border-border px-2.5 text-text-subtle hover:border-accent hover:text-accent"
+          >
+            <GitHubIcon className="size-3.5" />
+            {starLabel ? <b className="font-mono text-caption font-normal tabular-nums">{starLabel}</b> : null}
+            <span className="sr-only">{opensInNewTab}</span>
+          </a>
+          <Link href={navPrimary.href} className="inline-flex h-[30px] items-center border border-border px-3.5 text-caption tracking-[0.07em] uppercase text-text hover:border-accent hover:bg-accent hover:text-canvas">
+            {navPrimary.label}
+          </Link>
+        </div>
 
         <details className="group relative md:hidden">
-          <summary className="flex size-11 cursor-pointer list-none items-center justify-center rounded-sm text-text-muted hover:text-text [&::-webkit-details-marker]:hidden">
+          <summary className="flex size-[30px] cursor-pointer list-none flex-col items-center justify-center gap-1 border border-border text-text-subtle hover:border-accent hover:text-accent [&::-webkit-details-marker]:hidden">
+            <span className="block h-px w-3.5 bg-current" />
+            <span className="block h-px w-3.5 bg-current" />
+            <span className="block h-px w-3.5 bg-current" />
             <span className="sr-only">{headerCopy.openMenuLabel}</span>
-            <ChevronIcon className="size-5 transition-transform duration-instant ease-out group-open:rotate-180" />
           </summary>
-          <nav
-            aria-label={headerCopy.navLabel}
-            className="menu-panel absolute right-0 mt-2 w-56 rounded-sm border border-border bg-surface p-2"
-          >
-            <ul className="flex flex-col">
-              {navItems.map((item) => (
-                <li key={item.id}>
-                  <a
-                    href={item.href}
-                    className={cx(
-                      "flex min-h-11 items-center rounded-sm px-3 text-body text-text-muted",
-                      "hover:bg-surface-hover hover:text-text",
-                    )}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <a
-                  href={navExternal.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex min-h-11 items-center gap-2 rounded-sm px-3 text-body text-text-muted hover:bg-surface-hover hover:text-text"
-                >
-                  <GitHubIcon className="size-4" />
-                  {navExternal.label}
-                  <span className="sr-only">{opensInNewTab}</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+          <div className="absolute right-0 top-[38px] w-56 border border-border bg-canvas">
+            {navItems.map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="block border-b border-border px-4 py-3.5 text-caption tracking-[0.07em] uppercase text-text"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <a
+              href={site.repositoryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 border-b border-border px-4 py-3.5 text-caption text-text-subtle"
+            >
+              <GitHubIcon className="size-3.5" /> GitHub{starLabel ? ` · ${starLabel}` : ""}
+              <span className="sr-only">{opensInNewTab}</span>
+            </a>
+            <Link href={navPrimary.href} className="block px-4 py-3.5 text-caption tracking-[0.07em] uppercase text-text">
+              {navPrimary.label}
+            </Link>
+          </div>
         </details>
-      </div>
+      </nav>
     </header>
   );
 }

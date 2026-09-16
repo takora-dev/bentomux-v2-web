@@ -70,6 +70,20 @@ export function statFacts(stars: number | null): readonly StatFact[] {
   return [starFact, ...staticFacts];
 }
 
+export async function fetchLatestTag(): Promise<string | null> {
+  try {
+    const response = await fetch(`${API}/releases/latest`, {
+      headers: { accept: "application/vnd.github+json" },
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) return null;
+    const body = (await response.json()) as { tag_name?: unknown };
+    return typeof body.tag_name === "string" ? body.tag_name : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Reads the star count once an hour. Any failure — offline build, rate limit,
  *  a renamed repository — returns `null`, which drops the item. */
 export async function fetchStarCount(): Promise<number | null> {
