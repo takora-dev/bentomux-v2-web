@@ -1,6 +1,6 @@
 /* Section copy — the bands of the single-scroll landing page (IA §3.1, revised
-   2026-09-15). The page is deliberately five bands: the hero, the stat strip, the
-   application window figure, the numbered capability rows and the install close.
+   2026-09-15). The page has six bands: the hero, the stat strip, the
+   application window figure, the numbered capability rows, the FAQ and the install close.
    Section copy is fixed here and must not be reworded without revising the IA.
    In-page anchors are stable (IA URL-002). */
 
@@ -50,8 +50,6 @@ export const anchors = {
    The manual-download wording is composed in the section from
    `manualDownloads` in install.ts, so the format list has one source. */
 export const installExtras = {
-  linuxArchNote:
-    "Linux builds are published for x86_64 only. There is no aarch64 Linux build yet.",
   pinLabel: "Pinned to one version",
 } as const;
 

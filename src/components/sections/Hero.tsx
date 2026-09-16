@@ -52,7 +52,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[var(--container-max)]">
+      <div className="relative mx-auto w-full max-w-[var(--layout-max)]">
         <div className="flex w-full flex-col gap-6">
           <p>
             {/* The ribbon points at the published releases, not at the install
@@ -83,7 +83,7 @@ export function Hero() {
 
           <p className="max-w-[52ch] text-body-lg text-text-muted">{hero.subheadline}</p>
 
-          <CommandBlock command={command.command} note={hero.quickStartNote} className="w-full max-w-[52ch]" />
+          <CommandBlock command={command.command} note={hero.quickStartNote} className="w-full min-w-0 max-w-[52ch]" />
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-caption text-text-subtle">
             <span>

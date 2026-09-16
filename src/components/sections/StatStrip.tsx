@@ -16,7 +16,7 @@ export function StatStrip({ stars }: { stars: number | null }) {
       <h2 id="stat-strip-heading" className="sr-only">
         {statStripCopy.heading}
       </h2>
-      <ul className="mx-auto grid w-full max-w-[var(--container-max)] grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-4">
+      <ul className="mx-auto grid w-full max-w-[var(--layout-max)] grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border md:grid-cols-4">
         {facts.map((fact) => (
           <li key={fact.id} className="bg-canvas-raised">
             <a

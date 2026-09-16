@@ -28,7 +28,7 @@ export default function PrivacyPage() {
       <SkipLink />
       <SiteHeader />
       <main id="main" className="flex flex-1 flex-col px-4 py-16 lg:px-10 lg:py-24">
-        <article className="mx-auto flex w-full max-w-[var(--container-max)] flex-col gap-8">
+        <article className="mx-auto flex w-full max-w-[var(--layout-max)] flex-col gap-8">
           <header className="flex max-w-[60ch] flex-col gap-4">
             <p className="text-overline text-accent uppercase">{privacyPage.overline}</p>
             <h1 className="text-heading">{privacyPage.heading}</h1>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
           </div>
         </article>
       </main>
-      <SiteFooter showProductAnchors={false} />
+      <SiteFooter />
     </>
   );
 }

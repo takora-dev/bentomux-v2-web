@@ -106,7 +106,7 @@ export function CapsSection() {
       aria-labelledby="capabilities-heading"
       className="scroll-mt-nav border-t border-border px-4 py-16 lg:px-10 lg:py-24"
     >
-      <div className="mx-auto flex w-full max-w-[var(--container-max)] flex-col">
+      <div className="mx-auto flex w-full max-w-[var(--layout-max)] flex-col">
         <h2 id="capabilities-heading" className="sr-only">
           {copy.heading}
         </h2>

@@ -11,7 +11,7 @@ import { screenshotCopy } from "@/content/screenshot";
 export function ScreenshotFigure() {
   return (
     <section aria-labelledby="screenshot-heading" className="px-4 pb-16 lg:px-10 lg:pb-24">
-      <figure className="mx-auto flex w-full max-w-[var(--container-max)] flex-col gap-3">
+      <figure className="mx-auto flex w-full max-w-[var(--layout-max)] flex-col gap-3">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2
             id="screenshot-heading"

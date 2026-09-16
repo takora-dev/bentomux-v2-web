@@ -49,7 +49,7 @@ export default function NotFound() {
           <p className="text-caption text-text-subtle">{site.copyrightLine}</p>
         </div>
       </main>
-      <SiteFooter showProductAnchors={false} />
+      <SiteFooter />
     </>
   );
 }
