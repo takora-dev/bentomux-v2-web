@@ -1,16 +1,7 @@
-import {
-  commandsForPanel,
-  installCopy,
-  installOptions,
-  installerSteps,
-  manualDownloads,
-  platformDetectionScript,
-} from "@/content/install";
+import { commandsForPanel, installCopy, installOptions, manualDownloads } from "@/content/install";
 import { installExtras, sections } from "@/content/sections";
 
 import { CopyButton } from "../install/CopyButton";
-import { cx } from "../ui/cx";
-import { WarningIcon } from "../ui/icons";
 import { SectionHeader } from "../ui/primitives";
 
 const copy = sections.find((section) => section.id === "install")!;
@@ -25,9 +16,9 @@ export function InstallSection() {
     <section
       id="install"
       aria-labelledby="install-heading"
-      className="scroll-mt-nav px-4 py-16 lg:px-10 lg:py-24"
+      className="scroll-mt-nav px-4 border-t border-border py-10 lg:px-8 lg:py-20"
     >
-      <div className="mx-auto flex w-full max-w-[var(--container-max)] flex-col gap-12">
+      <div className="mx-auto flex w-full max-w-[var(--layout-max)] flex-col gap-12">
         <SectionHeader
           eyebrow={copy.eyebrow}
           heading={copy.heading}
@@ -72,7 +63,7 @@ export function InstallSection() {
                           {installExtras.pinLabel}
                         </p>
                       ) : null}
-                      <div className="overflow-x-auto rounded-sm border border-border bg-surface">
+                      <div className="block w-full min-w-0 max-w-full overflow-x-auto rounded-sm border border-border bg-surface">
                         <code className="block w-max px-4 py-3 font-mono text-mono whitespace-pre text-text">
                           {command.command}
                         </code>
@@ -86,35 +77,13 @@ export function InstallSection() {
                       </figcaption>
                     </figure>
                   ))}
-
-                  {option.id === "linux" ? (
-                    <p className="text-body-sm text-text-muted">{installExtras.linuxArchNote}</p>
-                  ) : null}
-
-                  {option.notes.map((note) => {
-                    const isWarning = option.id === "macos";
-                    return (
-                      <p
-                        key={note}
-                        className={cx(
-                          "flex items-start gap-2 text-body-sm",
-                          isWarning ? "text-warning" : "text-text-muted",
-                        )}
-                      >
-                        {isWarning ? (
-                          <WarningIcon className="mt-0.5 size-4 shrink-0" />
-                        ) : null}
-                        {note}
-                      </p>
-                    );
-                  })}
                 </div>
               </div>
             ))}
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-4 border-t border-border pt-8">
+        <div className="flex flex-col gap-4">
           <p className="text-body-sm text-text-muted">
             {manualDownloads.label} {manualDownloads.sentence.before}
             {manualDownloads.formats.join(", ")}
@@ -129,19 +98,7 @@ export function InstallSection() {
             </a>
             {manualDownloads.sentence.after}
           </p>
-          <ol className="flex flex-col gap-2">
-            {installerSteps.map((step) => (
-              <li key={step.id} className="text-body-sm text-text-muted">
-                {step.text}
-              </li>
-            ))}
-          </ol>
         </div>
-
-        {/* FR-005.4 / TC-F005-014: detection runs while the document is parsed,
-            once, before any interaction — so it can never override a selection
-            the visitor has already made. */}
-        <script dangerouslySetInnerHTML={{ __html: platformDetectionScript }} />
       </div>
     </section>
   );

@@ -23,8 +23,8 @@ export function CommandBlock({
         className,
       )}
     >
-      <div className="flex items-center gap-x-4">
-        <div className="min-w-0 flex-1 overflow-x-auto">
+      <div className="flex min-w-0 items-center gap-x-4">
+        <div className="min-w-0 w-full flex-1 overflow-x-auto">
           <code className="font-mono text-mono text-text whitespace-nowrap">
             <span aria-hidden="true" className="text-text-subtle">
               ${" "}

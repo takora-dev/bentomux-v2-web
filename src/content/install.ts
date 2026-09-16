@@ -40,7 +40,6 @@ export type InstallOption = {
   readonly id: InstallPanelId;
   readonly label: string;
   readonly isDefault: boolean;
-  readonly notes: readonly string[];
   readonly order: number;
 };
 
@@ -49,26 +48,18 @@ export const installOptions: readonly InstallOption[] = [
     id: "macos",
     label: "macOS",
     isDefault: true,
-    notes: [
-      "The published build is unsigned and not notarized. macOS may ask you to confirm the first launch under System Settings → Privacy & Security.",
-    ],
     order: 1,
   },
   {
     id: "linux",
     label: "Linux",
     isDefault: false,
-    notes: [
-      "The --deb alternative installs the Debian package through apt and needs root.",
-      "On some distributions an AppImage needs libfuse2: sudo apt install libfuse2",
-    ],
     order: 2,
   },
   {
     id: "windows",
     label: "Windows",
     isDefault: false,
-    notes: ["The per-user setup installs without administrator rights."],
     order: 3,
   },
 ] as const;
@@ -133,24 +124,6 @@ export const installCommands: readonly InstallCommand[] = [
     requiresRoot: false,
     sourcePath: "installers/install.cmd",
     order: 2,
-  },
-] as const;
-
-export const installerSteps = [
-  {
-    id: "resolve",
-    text: "Reads the release manifest published by the build workflow to find the build for your platform.",
-    order: 1,
-  },
-  {
-    id: "verify",
-    text: "Verifies the download against its SHA-256 digest and refuses to install anything that does not match.",
-    order: 2,
-  },
-  {
-    id: "install",
-    text: "Installs the application without asking for administrator rights on macOS and Windows.",
-    order: 3,
   },
 ] as const;
 
@@ -233,7 +206,6 @@ for (const command of installCommands) {
   }
 }
 requireCount(installOptions, 3, "installOptions");
-requireCount(installerSteps, 3, "installerSteps");
 requireCount(manualDownloads.formats, 5, "manualDownloads.formats");
 requireUnique(installCommands, (command) => command.id, "installCommands");
 requireUnique(installOptions, (option) => option.id, "installOptions");
