@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Archivo } from "next/font/google";
 
+import { platformDetectionScript } from "@/content/install";
 import { site } from "@/content/site";
 
 import "./globals.css";
@@ -41,12 +43,14 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#17181B",
   colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${archivo.variable} h-full`}>
-      <body className="flex min-h-full flex-col antialiased">
+    <html lang="en" className={`${archivo.variable} h-full w-full`}>
+      <body className="flex min-h-full w-full flex-col antialiased">
         {/* NFR-008.3: structured data describing the project, no third party. */}
         <script
           type="application/ld+json"
@@ -66,6 +70,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         {children}
+        <Script id="install-platform-detection" strategy="beforeInteractive">
+          {platformDetectionScript}
+        </Script>
       </body>
     </html>
   );

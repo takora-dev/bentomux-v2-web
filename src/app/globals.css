@@ -77,7 +77,7 @@
 
   /* layout */
   --spacing-nav: 64px;
-  --container-max: 1200px;
+  --layout-max: 1200px;
 
   /* motion */
   --duration-instant: 80ms;
@@ -101,13 +101,18 @@
   html {
     /* NAV-008 / LAY-005: anchored headings clear the sticky bar. */
     scroll-padding-top: var(--spacing-nav);
+    width: 100%;
+    overflow-x: clip;
+    scroll-behavior: smooth;
   }
 
   body {
+    width: 100%;
     background-color: var(--color-canvas);
     color: var(--color-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
   }
 
   h1,
