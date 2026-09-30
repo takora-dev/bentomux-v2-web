@@ -50,7 +50,7 @@ export type CapabilityRow = {
   readonly order: number;
 };
 
-/** The eight names row 04 shows as chips. Picked from ENT-003 by id, so the
+/** The nine names row 04 shows as chips. Picked from ENT-003 by id, so the
  *  labels are the roster's own. */
 const runtimeChipIds = [
   "claude",
@@ -58,9 +58,10 @@ const runtimeChipIds = [
   "cursor",
   "gemini",
   "grok",
+  "copilot",
   "opencode",
   "pi",
-  "github-copilot",
+  "omp",
 ] as const;
 
 const runtimeChips = runtimeChipIds.map((id) => {

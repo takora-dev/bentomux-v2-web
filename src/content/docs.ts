@@ -79,7 +79,7 @@ export const docsCards: readonly DocsCard[] = [
   {
     id: "agents",
     title: "Agents",
-    body: "Detection for 21 agent CLIs, and the adapters that track what each one is doing.",
+    body: "Detection for 22 agent CLIs, and the adapters that track what each one is doing.",
     href: docsPaths.agents,
     cta: "Set up your agents →",
   },

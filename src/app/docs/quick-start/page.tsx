@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { DocsShell } from "@/components/docs/DocsNav";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Quick start",
@@ -27,7 +28,7 @@ export default function DocsQuickStartPage() {
             <p className="mt-2 text-body-sm text-text-muted">
               Run the command for your platform from <Link href="/docs/install" className="text-accent underline underline-offset-2">Install</Link>. There is no config file to write &mdash; the app creates its own on first run.
             </p>
-            <pre className="mt-4 overflow-x-auto rounded-sm bg-canvas px-4 py-3 text-mono text-text">curl -fsSL https://bentomux.dev/install.sh | sh</pre>
+            <pre className="mt-4 overflow-x-auto rounded-sm bg-canvas px-4 py-3 text-mono text-text">{`curl -fsSL ${site.siteUrl}/install.sh | sh`}</pre>
           </li>
           <li className="rounded-sm border border-border bg-canvas-raised p-6">
             <h2 className="text-body font-medium text-text">2. Add a workspace</h2>

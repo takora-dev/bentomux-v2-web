@@ -58,8 +58,8 @@ function validateStaticHtml(html) {
   );
   check("TC-F001-003: skip link before the header", html.indexOf("Skip to main") < html.indexOf("<header"));
   check(
-    "TC-F003-001: 21 detected and 9 configurable agents are in the HTML",
-    html.includes("21") && html.includes("9"),
+    "TC-F003-001: 22 detected and 9 configurable agents are in the HTML",
+    html.includes("22") && html.includes("9"),
   );
   check(
     "TC-F005-003: all three install panels are in the server HTML",
@@ -237,8 +237,8 @@ async function main() {
   /* --- spec audit: gaps found in docs/user_flows + docs/system_logics --------- */
   check(
     "sys_uc_004 (amended): both derived counts render from ENT-003",
-    /21 are detected out of the box/.test(html) &&
-      /21 detected · 9 also configurable/.test(html) &&
+    /22 are detected out of the box/.test(html) &&
+      /22 detected · 9 also configurable/.test(html) &&
       html.includes("agent CLIs detected"),
   );
   check(

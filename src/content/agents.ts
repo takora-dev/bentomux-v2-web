@@ -1,9 +1,12 @@
 /* AgentRuntime — ENT-003.
 
    Detection count and the detected names come from the 21 TOML manifests in
-   takora-dev/bentomux-v2 `resources/manifests/` (BR-003.1). The manifests carry
-   an `id` and no display name, so the labels below are the id in product
-   casing; the nine that also have an adapter keep the adapter's own name from
+   takora-dev/bentomux-v2 `resources/manifests/` plus the runtime-only `omp`
+   (oh-my-pi) binary key in `src-tauri/src/runtime.rs` NAME_RE, which labels
+   panes without a manifest (BR-003.1). Ids are the runtime keys the app
+   labels panes with — `copilot` and `antigravity`, not the manifest `id`
+   fields (`copilot` lives in github-copilot.toml, `agy` in antigravity.toml).
+   The nine that also have an adapter keep the adapter's own name from
    `src-tauri/src/agents/index.rs` and the generic adapter factories (BR-003.2).
 
    QwenPaw is configurable and has no manifest, so it appears in the
@@ -22,6 +25,7 @@ export type AgentRuntime = {
 export const detectedAgents: readonly AgentRuntime[] = [
   { id: "amp", name: "Amp", support: "detected" },
   { id: "antigravity", name: "Antigravity", support: "detected" },
+  { id: "omp", name: "oh-my-pi", support: "detected" },
   { id: "claude", name: "Claude Code", support: "detected" },
   { id: "cline", name: "Cline", support: "detected" },
   { id: "codex", name: "OpenAI Codex", support: "detected" },
@@ -29,7 +33,7 @@ export const detectedAgents: readonly AgentRuntime[] = [
   { id: "devin", name: "Devin", support: "detected" },
   { id: "droid", name: "Droid", support: "detected" },
   { id: "gemini", name: "Gemini CLI", support: "detected" },
-  { id: "github-copilot", name: "GitHub Copilot", support: "detected" },
+  { id: "copilot", name: "GitHub Copilot", support: "detected" },
   { id: "grok", name: "Grok CLI", support: "detected" },
   { id: "hermes", name: "Hermes", support: "detected" },
   { id: "kilo", name: "Kilo Code", support: "detected" },
@@ -61,7 +65,7 @@ export const agentCounts = {
   configurable: configurableAgents.length,
 } as const;
 
-invariant(agentCounts.detected === 21, "detected agent count must match the 21 manifests (BR-003.1)");
+invariant(agentCounts.detected === 22, "detected agent count must match manifests + runtime-only keys (BR-003.1)");
 invariant(agentCounts.configurable === 9, "configurable agent count must match the adapter registry (BR-003.2)");
 invariant(
   !detectedAgents.some((agent) => agent.id === "qwenpaw"),

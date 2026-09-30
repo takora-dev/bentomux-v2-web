@@ -6,7 +6,7 @@ import { DocsShell } from "@/components/docs/DocsNav";
 export const metadata: Metadata = {
   title: "Plugins",
   description:
-    "Author a Bentomux plugin: plugin.json manifest, seven UI surfaces, permissions, and the CLI validator.",
+    "Author a Bentomux plugin: plugin.json manifest, nine contribution points, permissions, network origins, and the CLI validator.",
   alternates: { canonical: "/docs/plugins" },
 };
 
@@ -45,7 +45,7 @@ export default function Page() {
 
         <section className="flex flex-col gap-3">
           <h2 className="text-heading-sm">Surfaces</h2>
-          <p className="text-body-sm text-text-muted">Seven places a plugin can appear:</p>
+          <p className="text-body-sm text-text-muted">Nine places a plugin can appear:</p>
           <div className="overflow-x-auto rounded-sm border border-border">
             <table className="w-full border-collapse text-left text-caption">
               <thead>
@@ -79,9 +79,17 @@ export default function Page() {
                   <td className="px-4 py-3 text-mono">modals</td>
                   <td className="px-4 py-3">A modal dialog</td>
                 </tr>
-                <tr>
+                <tr className="border-b border-border">
                   <td className="px-4 py-3 text-mono">widgets</td>
                   <td className="px-4 py-3">A panel in the right sidebar</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="px-4 py-3 text-mono">settings</td>
+                  <td className="px-4 py-3">A section in the Settings modal</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 text-mono">services</td>
+                  <td className="px-4 py-3">A headless background task</td>
                 </tr>
               </tbody>
             </table>
@@ -126,6 +134,7 @@ export default function Page() {
             <li>every permission name is one the app knows</li>
             <li>every command referenced by a button, sidebar entry or dock item is declared</li>
             <li>icons resolve &mdash; a builtin name, or a file that exists</li>
+            <li>every network origin is a bare https:// host with no path</li>
             <li>the whole plugin is under 5 MB</li>
           </ul>
           <p className="text-body-sm text-text-muted">
@@ -145,6 +154,18 @@ export default function Page() {
           <p className="text-body-sm text-text-muted">
             There is no hosted registry. Plugins are distributed however you like &mdash; a git repository, a
             release asset, a zip on a file share &mdash; and installed by URL or from disk.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h2 className="text-heading-sm">Network access</h2>
+          <p className="text-body-sm text-text-muted">
+            A plugin that fetches an outside website declares it in{" "}
+            <code className="rounded-sm bg-surface px-1.5 py-0.5 text-mono">plugin.json</code> under{" "}
+            <code className="rounded-sm bg-surface px-1.5 py-0.5 text-mono">network</code>, as bare{" "}
+            <code className="rounded-sm bg-surface px-1.5 py-0.5 text-mono">https://host[:port]</code>{" "}
+            origins with no path. The Studio install review shows the declared hosts next to the
+            permissions, and a host outside the last build stays blocked until the next release.
           </p>
         </section>
 
