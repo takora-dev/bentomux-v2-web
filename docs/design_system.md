@@ -514,12 +514,14 @@ Was: four external-link cards (Star, Report a bug, Ask a question, Email) under 
 | Layout | Brand column plus three link columns at `lg` (`minmax(0,1.4fr)` then three equal columns), two at `md`; the brand cell is the logo and nothing else |
 | Link text | `--text-body-sm`, `--color-text-muted`, hover `--color-text`; rows are 44px below `md` (`BTN-002`) and 32px from `md` |
 | Group heading | `--text-overline`, uppercase, `--color-text-subtle` |
-| Legal block | Hairline spans the footer; the prose sits in a single column capped at `70ch`, `--text-caption`. The load-bearing licence sentence holds `--color-text-muted`; the trademark disclaimer and telemetry line are `--color-text-subtle` |
-| Bottom bar | Hairline above; copyright (`--color-text-subtle`) left, Privacy and the `mailto:` address right, `--text-caption`; stacks below `sm` |
+| Legal block | **Removed 2026-09-16.** The footer carried no prose below the links: the licence sentence, the trademark disclaimer and the telemetry line are all withdrawn (`FR-009.1`, `FR-009.6`, `BR-009.1`) |
+| Bottom bar | Hairline above; copyright (`--color-text-subtle`) left, the released version and the `MIT` identifier right, `--text-caption`; stacks below `sm`. The Privacy link is **removed 2026-09-16** with the page it pointed at |
 | Logo | `assets/bentomux.png` at 24px height, linking to `/`, with the wordmark beside it |
-| Structure | Brand and links, then a hairline, then the legal block (licence statement, trademark disclaimer, telemetry), then a hairline, then copyright and the two routes out |
+| Structure | **Amended 2026-09-16.** A single row: logo and links, the slogan, then the version and licence identifier, the repository link and the optional `mailto:`. No hairline, no legal block, no bottom bar |
 
-The legal block text is fixed by `SRS BR-009.1`–`BR-009.2` and must be rendered from a content module so it cannot drift per page (`IA XPG-001`). `--color-text-subtle` is permitted here because it is non-essential fine print at large size — but the license statement, being legally load-bearing, uses `--color-text-muted` (7.69:1).
+**Withdrawn 2026-09-16.** There is no legal block, so nothing here is fixed by `SRS BR-009.1`–`BR-009.2` and there is no `70ch` prose column. The footer prints the `MIT` identifier beside the released version at `--text-caption`, and `BR-009.2` (link the `LICENSE` file) still holds through the repository link. The `--color-text-muted` licence-sentence treatment is gone with the sentence.
+
+> **Revised 2026-09-16.** The licence and telemetry statements were removed from the footer on the owner's instruction. `FR-009.1` and `FR-009.6` are withdrawn, and with them the legal block, the `70ch` prose column and the `--color-text-muted` licence sentence. The footer is now a single row; the licence survives as the bare `MIT` identifier beside the version, and `BR-009.2` (the link to the `LICENSE` file) is unaffected. The corresponding checks in `scripts/smoke.mjs` were retired in the same change.
 
 > **Revised 2026-09-15.** The attribution and non-affiliation sentences, the upstream credit link, and the `SiteConfig.upstreamUrl` / `attributionStatement` / `nonAffiliationStatement` fields were removed: the claim that the application ports detection logic from another project was withdrawn, so the sentences that discharged it no longer describe anything. `BR-009.3`, `BR-009.4` and `FR-009.2` remain open in `docs/srs.md`; see `docs/devlogs/20260915-footer-restructure.md`.
 

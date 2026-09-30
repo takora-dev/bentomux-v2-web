@@ -51,5 +51,10 @@ export const anchors = {
    `manualDownloads` in install.ts, so the format list has one source. */
 export const installExtras = {
   pinLabel: "Pinned to one version",
+  /* TC-F005-010: the steps state the digest refusal, so nobody reads an
+     unverified download as fine. The /docs/install page carries the longer
+     version of this, alongside the unsigned-builds note. */
+  verificationNote:
+    "The installer checks every download against the release manifest and refuses to install anything that does not match.",
 } as const;
 

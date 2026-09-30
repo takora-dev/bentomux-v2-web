@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { footerLegal, opensInNewTab } from "@/content/chrome";
+import { opensInNewTab } from "@/content/chrome";
 import { site } from "@/content/site";
 import { fetchLatestTag } from "@/content/stats";
 
@@ -43,7 +43,6 @@ export async function SiteFooter() {
               {site.contactEmail}
             </a>
           ) : null}
-          <span className="sr-only">{footerLegal.heading}</span>
         </span>
       </span>
     </footer>

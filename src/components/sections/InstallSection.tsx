@@ -16,7 +16,7 @@ export function InstallSection() {
     <section
       id="install"
       aria-labelledby="install-heading"
-      className="scroll-mt-nav px-4 border-t border-border py-10 lg:px-8 lg:py-20"
+      className="scroll-mt-nav px-4 border-t border-border py-16 lg:px-8 lg:py-24"
     >
       <div className="mx-auto flex w-full max-w-[var(--layout-max)] flex-col gap-12">
         <SectionHeader
@@ -84,6 +84,7 @@ export function InstallSection() {
         </fieldset>
 
         <div className="flex flex-col gap-4">
+          <p className="text-body-sm text-text-muted">{installExtras.verificationNote}</p>
           <p className="text-body-sm text-text-muted">
             {manualDownloads.label} {manualDownloads.sentence.before}
             {manualDownloads.formats.join(", ")}

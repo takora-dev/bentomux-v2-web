@@ -9,7 +9,7 @@
 > | Repository / star | Navigation bar (`SEC-001`, `FR-007.1`) and the stat strip's star figure (`SEC-011`, `FR-002.7`, `FR-007.2` retired) |
 > | Repository, latest release, licence | Footer project group (`SEC-010`) |
 > | Issues, discussions | Footer support group (`SEC-010`) |
-> | Contact address | Footer legal block (`SEC-010`), as a `mailto:` |
+> | Contact address | Footer (`SEC-010`), as a `mailto:` — **amended 2026-09-16**, it renders in the footer row rather than in a legal block |
 
 ## Use Case Reference
 
@@ -25,7 +25,7 @@
 | Page ID | Page Name | Role |
 |---------|-----------|------|
 | PAGE-001 | `/` | The navigation bar carries the repository link; the stat strip carries the star figure; the footer carries the project and support groups plus the contact `mailto:`. |
-| PAGE-002 | `/privacy` | Second render site of the contact address and of the licence statement (`XPG-001`). No project links beyond those. |
+| PAGE-002 | `/privacy` | **Retired.** The route 308-redirects to `/`; it is no longer a second render site of the contact address or of the licence statement (`XPG-001`, amended 2026-09-16). No project links beyond those. |
 | — | GitHub, mail client | External destinations. Not screens of this site; reached by leaving it. |
 
 ## Related Entities
@@ -138,7 +138,7 @@ If a destination has gone stale, the failure surfaces at GitHub or in the mail c
 | Star figure destination | — | `ENT-015 StatFact.href` = `ENT-001.repositoryUrl` | `href` | Same destination as the bar, one source (`FR-007.1`) |
 | Project group links | — | `src/content/chrome.ts` `projectLinks` → `ENT-001.repositoryUrl`, `.releasesLatestUrl`, `.licenseHref` | `href`s | The licence entry renders only while `licenseHref` is set (`BR-009.2`) |
 | Support group links | — | `supportLinks` → `ENT-001.issuesUrl`, `.discussionsUrl` | `href`s | Bug reports and questions stay separate (`FR-007.3`, `FR-007.4`) |
-| Contact link | — | `ENT-001.contactEmail` (nullable) | `mailto:` `href` in the legal block | Rendered only when `NEXT_PUBLIC_CONTACT_EMAIL` is set; the address is never printed as text (`BR-007.4`) |
+| Contact link | — | `ENT-001.contactEmail` (nullable) | `mailto:` `href` in the footer row | Rendered only when `NEXT_PUBLIC_CONTACT_EMAIL` is set; the address is never printed as text (`BR-007.4`) |
 | External marker | — | — | `target`, `rel`, and the suffix (opens in a new tab) | `FR-007.6`, `NFR-002.8` |
 | Star count slot when the read fails | — | `statFacts(null)` | Not rendered | The cell is dropped, never zeroed (`BR-002.3`, `BR-007.3`) |
 

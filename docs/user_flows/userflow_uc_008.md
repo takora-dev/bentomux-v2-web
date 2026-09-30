@@ -10,20 +10,20 @@
 | Name | Read the License and Privacy Statement |
 | Actor | Cautious evaluator — a developer or engineering lead checking legal and data-handling posture before adopting or recommending the project (`SRS §2.3`) |
 | Goal | Establish what licence the project carries, that the site collects nothing beyond a voluntarily submitted address, and how to have that address removed |
-| Trigger | The visitor reads the footer's legal block, or follows the privacy policy link from the footer or from the waitlist consent statement |
-| Preconditions | The site is deployed. `SiteConfig` contains the licence statement, the trademark disclaimer, and the contact address. The application repository carries an MIT `LICENSE` tracked on `master`, so the plain statement is in force (`SRS BR-009.1`, `CON-008`). |
+| Trigger | The visitor reads the footer's `MIT` identifier and follows the repository link to the `LICENSE` file. **Withdrawn 2026-09-16:** the privacy-policy route no longer exists — `/privacy` 308-redirects to `/` — and the footer carries no licence or telemetry sentence |
+| Preconditions | The site is deployed. `SiteConfig` carries the licence identifier, the licence file link and the contact address. The application repository carries an MIT `LICENSE` tracked on `master` (`SRS CON-008`). The `licenseStatement` and `telemetryStatement` fields remain in `SiteConfig` but are not rendered (2026-09-16) |
 
 ## Main Flow
 
 *The "happy path" — the most common, successful scenario.*
 
-1. Visitor reaches the footer → reads a legal block below a hairline, containing the licence sentence, the trademark disclaimer, the telemetry line, and the copyright line (`SRS FR-009.1`, `FR-009.3`, `FR-009.6`).
-2. Visitor reads the licence statement → it states that the project is open source under the MIT License, naming the same licence the application repository's `LICENSE` file carries, and it is stated plainly rather than in deferred form because that file exists (`SRS BR-009.1`, `CON-008`).
-3. Visitor reads the trademark disclaimer → it states that agent and vendor names used on the page are the property of their owners and do not imply affiliation (`SRS BR-009.3`).
-4. Visitor follows the privacy policy link → `/privacy` renders a complete statement: what is collected, why, where it is stored, how long it is kept, how to have it removed, and what the site does not do — no cookies, no tracking, no analytics (`SRS FR-009.6`).
-5. Visitor reads the licence-and-data block within the policy → it restates the same licence statement used in the footer, rendered from the same content module so the two cannot disagree (`IA XPG-001`).
-6. Visitor reads the removal instructions → they find the contact address and the removal route, which is the address configured in `SiteConfig` (`SRS FR-009.5`, `BR-004.5`).
-7. **Goal achieved:** The visitor can state the licence position and exactly what happens to an email address they submit, and knows how to withdraw it.
+1. Visitor reaches the footer → reads a single row: the slogan, the copyright line, the released version, the `MIT` identifier, the repository link and the optional `mailto:` (`SRS BR-009.2`, `BR-004.4`). **Withdrawn 2026-09-16:** there is no legal block below a hairline, and no licence sentence, trademark disclaimer or telemetry line (`FR-009.1`, `FR-009.3`, `FR-009.6`).
+2. Visitor reads the licence identifier → it is `MIT`, matching the licence the application repository's `LICENSE` file carries, and the repository link reaches that file (`SRS BR-009.2`, `CON-008`). The prose statement of the licence is withdrawn (`SRS BR-009.1`, 2026-09-16).
+3. **Withdrawn 2026-09-15:** the trademark disclaimer is gone, so there is no affiliation sentence to read. Nothing on the site claims or denies a relationship with another project (`FR-009.2`).
+4. **Withdrawn 2026-09-16:** `/privacy` is retired and 308-redirects to `/`, so there is no policy to follow and no statement of what the site collects or does not collect (`SRS FR-009.5`, `FR-009.6`).
+5. **Withdrawn 2026-09-16:** the licence-and-data block that used to restate the footer copy is gone, so the no-drift pairing it enforced no longer has two render sites. `XPG-001` is amended to cover the licence identifier.
+6. **Withdrawn 2026-09-16:** there are no removal instructions on the site, because the only data it handled was a voluntarily submitted address behind a form that no longer exists. `SiteConfig.contactEmail` still renders as a `mailto:` when configured (`SRS BR-004.4`).
+7. **Goal achieved (reduced 2026-09-16):** the visitor can reach the `LICENSE` file from the footer. They can no longer establish a data-handling posture from this site — that half of the goal is unanswered.
 
 ## Alternative Flows
 
@@ -70,7 +70,7 @@
 ### Exc-1: A licence other than MIT is stated
 **Trigger:** Any copy on the site names a licence other than the one the repository carries.
 
-1. This contradicts `SRS BR-009.1` and `CON-008`: the application repository carries an MIT `LICENSE`, so the project's own licence is MIT.
+1. This contradicts `SRS CON-008`: the application repository carries an MIT `LICENSE`, so the project's own licence is MIT, and the `MIT` identifier the footer prints must be that value. (`BR-009.1` withdrawn 2026-09-16, so the rule binds the identifier, not a sentence.): the application repository carries an MIT `LICENSE`, so the project's own licence is MIT.
 2. No page may state a licence claim the repository cannot show, and such a claim must fail the content test that scans rendered copy (`SRS FR-009.2`).
 3. **Outcome:** The site cannot ship a licence claim that is false.
 

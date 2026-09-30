@@ -20,7 +20,7 @@ Three families of cases are unusual and worth calling out before reading the ind
 
 - **Build-time validation cases** (TC-F001-006, TC-F003-003, TC-F005-004, TC-F005-005, TC-F005-006) assert that the *build fails* when a data-model invariant is violated. They are executed by corrupting one fixture and confirming the build rejects it with the recorded error code. Their point is that a wrong fact cannot reach a visitor.
 - **Command-fidelity cases** (TC-F005-004, TC-F005-012) compare rendered executable text against the application repository's installer scripts and README install block byte for byte, because the site's commands are transcriptions of someone else's working code (see `test_plan.md` §2.1).
-- **Content-accuracy cases** (TC-F003-004, TC-F003-005, TC-F003-006, TC-F003-007, TC-F007-002, TC-F009-007) assert the *absence* of a claim, which is the shape most of this project's risk takes: no release date, no version literal beyond the pin placeholder, no advertised package manager, no numeric issue/fork/contributor/install count, no star count that is unlabelled or that outlives its read, no licence identifier that contradicts the tracked file, no named upstream project or claimed relationship with one.
+- **Content-accuracy cases** (TC-F003-004, TC-F003-005, TC-F003-006, TC-F003-007, TC-F007-002, TC-F009-007) assert the *absence* of a claim, which is the shape most of this project's risk takes: no release date, no version literal beyond the pin placeholder, no advertised package manager, no numeric issue/fork/contributor/install count, no star count that is unlabelled or that outlives its read, no licence identifier that contradicts the tracked file, no named upstream project or claimed relationship with one. (The licence *identifier* guard is the last one still live: the prose statement it used to cover was withdrawn 2026-09-16.)
 
 ### 1.3 Test Case Format
 
@@ -108,9 +108,9 @@ Three families of cases are unusual and worth calling out before reading the ind
 | TC-F008-004 | F008 | UC-007 | Palette token values match the application stylesheet | Removed |
 | TC-F008-005 | F008 | UC-007 | Palette tokens do not leak outside the preview and all eight meet AA | Removed |
 | TC-F008-006 | F008 | UC-007 | With JavaScript disabled the default palette and eight names render | Removed |
-| TC-F009-001 | F009 | UC-008 | Footer states the licence plainly and links the tracked licence file | Positive |
-| TC-F009-002 | F009 | UC-008 | `/privacy` renders all eight blocks in order | Positive |
-| TC-F009-003 | F009 | UC-008 | Footer and `/privacy` legal text are identical | Negative |
+| TC-F009-001 | F009 | UC-008 | Footer prints the licence identifier and links the tracked licence file (narrowed 2026-09-16) | Positive |
+| TC-F009-002 | F009 | UC-008 | Removed (2026-09-16) — `/privacy` retired; substance held by TC-F009-004 | — |
+| TC-F009-003 | F009 | UC-008 | Removed (2026-09-16) — both render sites gone | — |
 | TC-F009-004 | F009 | UC-008 | No tracking: no cookie, no third-party script, no storage write | Negative |
 | TC-F009-005 | F009 | UC-008 | The MIT statement is not the only licence text, and no page denies it | Negative |
 | TC-F009-006 | F009 | UC-008 | The attribution credit appears while the duty it creates is still open | Exception |
@@ -925,47 +925,23 @@ Three families of cases are unusual and worth calling out before reading the ind
 
 #### 3.9.1 UC-008: Read the License, Attribution, and Privacy Statement
 
-**TC-F009-001: Footer states the licence plainly and links the tracked licence file**
+**TC-F009-001: Footer states the licence plainly and links the tracked licence file** — **Narrowed (2026-09-16).** The prose half of this case is withdrawn with `BR-009.1`: the footer prints the bare `MIT` identifier beside the version and no licence sentence. The `LICENSE`-file half still runs.
 
 | Field | Value |
 |-------|-------|
 | TC ID | TC-F009-001 |
 | Related UC | UC-008 |
 | Related Feature | F009 |
-| Test Scenario | The licence statement matches the file the repository actually tracks |
+| Test Scenario | The licence identifier matches the file the repository actually tracks |
 | Type | Positive |
 | Preconditions | `licenseFilePublished = true`; `../Bentomux-v2/LICENSE` present on `master` and read by the test |
 | Test Data | `ENT-001` legal attributes; the tracked `LICENSE` file |
-| Test Steps | 1. Read `licenseId` from `LICENSE`  2. Read the footer sentence  3. Follow the licence link  4. Confirm no deferred wording remains |
-| Expected Result | The footer and `/privacy` state the same licence identifier as the tracked file — MIT — and the licence link resolves; no deferred or hedged wording appears (`FR-009.7`, `BR-009.1`, `CON-008`) |
+| Test Steps | 1. Read `licenseId` from `LICENSE`  2. Read the `MIT` identifier the footer prints beside the version  3. Follow the licence link  4. Confirm it resolves to that file |
+| Expected Result | The identifier the footer prints equals the licence in the tracked file — MIT — and the licence link resolves to it (`FR-009.7`, `BR-009.2`, `CON-008`). No prose sentence is asserted: `BR-009.1` is withdrawn |
 
-**TC-F009-002: `/privacy` renders all eight blocks in order**
+**TC-F009-002: `/privacy` renders all eight blocks in order** — **Removed (2026-09-16).** The page was retired and now 308-redirects to `/`; the eight-block contract it tested has no render site. Its remaining substance — that the site ships no analytics, no tracking script and no cookie — is asserted directly by TC-F009-004 and by the `TC-F009-004` smoke check.
 
-| Field | Value |
-|-------|-------|
-| TC ID | TC-F009-002 |
-| Related UC | UC-008 |
-| Related Feature | F009 |
-| Test Scenario | The statement is complete, not a stub |
-| Type | Positive |
-| Preconditions | Production build served |
-| Test Data | The eight blocks defined in `sys_uc_008.md` |
-| Test Steps | 1. Open `/privacy`  2. Read the blocks in order  3. Verify each block's content against the contract, especially the "not collected" list |
-| Expected Result | Eight non-empty blocks in the fixed order; the "not collected" block names analytics, cookies, advertising identifiers, session replay, third-party scripts, and retained IP addresses; the removal path names the contact address (`FR-009.5`, `FR-009.6`) |
-
-**TC-F009-003: Footer and `/privacy` legal text are identical**
-
-| Field | Value |
-|-------|-------|
-| TC ID | TC-F009-003 |
-| Related UC | UC-008 |
-| Related Feature | F009 |
-| Test Scenario | One source, two render sites, no divergence |
-| Type | Negative |
-| Preconditions | Both pages rendered |
-| Test Data | The licence sentence, attribution, trademark disclaimer, and copyright line |
-| Test Steps | 1. Extract each string from the footer  2. Extract the same string from `/privacy`  3. Compare character by character |
-| Expected Result | All four strings are identical; the test fails on any whitespace or wording difference (`XPG-001`) |
+**TC-F009-003: Footer and `/privacy` legal text are identical** — **Removed (2026-09-16).** Both render sites are gone: the licence, attribution and trademark sentences left the footer, and `/privacy` 308-redirects. `XPG-001` is amended to cover the licence *identifier* only, which no page can omit. The no-drift intent survives as a build-time invariant over the content modules rather than a rendered comparison.
 
 **TC-F009-004: No tracking: no cookie, no third-party script, no storage write**
 
@@ -995,9 +971,9 @@ Three families of cases are unusual and worth calling out before reading the ind
 | Test Scenario | The withdrawn provenance claim stays withdrawn |
 | Type | Negative |
 | Preconditions | Production build served from `next start` |
-| Test Data | The SSR HTML of `/` and `/privacy` |
-| Test Steps | 1. Fetch both pages  2. Scan the rendered HTML case-insensitively for the upstream project's name  3. Scan for any Apache-2.0 mention  4. Confirm the licence statement still names MIT |
-| Expected Result | Neither page contains the upstream name or an Apache-2.0 mention; the MIT licence sentence renders as before. Enforced by the two negative assertions in `scripts/smoke.mjs` and by TC-F009-001 (`FR-009.2` withdrawn, `BR-009.1`) |
+| Test Data | The SSR HTML of `/` |
+| Test Steps | 1. Fetch the page  2. Scan the rendered HTML case-insensitively for the upstream project's name  3. Scan for any Apache-2.0 mention  4. Confirm the `MIT` identifier still renders |
+| Expected Result | The page contains neither the upstream name nor any Apache-2.0 mention; the `MIT` identifier renders as before. Enforced by the negative assertions in `scripts/smoke.mjs` and by TC-F009-001 (`FR-009.2` and `BR-009.1` withdrawn) |
 
 ## 4. Traceability Matrix
 
@@ -1013,7 +989,7 @@ Three families of cases are unusual and worth calling out before reading the ind
 | F006 | FAQ | All five removed (2026-09-14) |
 | F007 | Project Links, Community and Repository Star | TC-F007-002, TC-F007-003; TC-F007-001 and TC-F007-004 removed |
 | F008 | Theme Palette Preview | All six removed (2026-09-14) |
-| F009 | Licensing, Attribution and Privacy | TC-F009-001 … TC-F009-004, TC-F009-007 |
+| F009 | Licensing, Attribution and Privacy | TC-F009-001 (narrowed), TC-F009-004, TC-F009-007; TC-F009-002 and -003 removed 2026-09-16 |
 
 ### 4.2 Test Case → Use Case
 
@@ -1026,7 +1002,7 @@ Three families of cases are unusual and worth calling out before reading the ind
 | UC-005 | Read the FAQ | None — the flow is retired (2026-09-14); TC-F006-001 … TC-F006-005 are retained identifiers |
 | UC-006 | Open the Project Links and Star the Repository | TC-F007-002, TC-F007-003 |
 | UC-007 | Preview Theme Palettes | None — the flow is retired (2026-09-14); TC-F008-001 … TC-F008-006 are retained identifiers |
-| UC-008 | Read the License, Attribution, and Privacy Statement | TC-F009-001 … TC-F009-004, TC-F009-007 |
+| UC-008 | Read the License, Attribution, and Privacy Statement | TC-F009-001 (narrowed), TC-F009-004, TC-F009-007; TC-F009-002 and -003 removed 2026-09-16 |
 
 ### 4.3 Test Case → UCIC
 
@@ -1039,7 +1015,7 @@ Three families of cases are unusual and worth calling out before reading the ind
 | UCIC-005 | Topic coverage, interaction contract | Retired with the FAQ band (`SEC-008` in the v1.1 numbering, 2026-09-14); no clause is exercised by v1.2 |
 | UCIC-006 | `targetKey` resolution table, validation rules | Retired with the community band (`SEC-009` in the v1.1 numbering, 2026-09-14); the footer link builder's uniqueness rule is exercised by TC-F007-003 |
 | UCIC-007 | Selector accessibility contract, token scope table | Retired with the palette band (`SEC-005` in the v1.1 numbering, 2026-09-14); the equivalent table for the figure band is exercised by TC-F001-007 … TC-F001-011 |
-| UCIC-008 | Legal block content contract, licence rule, eight privacy blocks | TC-F009-001 … TC-F009-006 |
+| UCIC-008 | Licence-identifier rule; the eight privacy blocks and the legal-block content contract were removed 2026-09-16 | TC-F009-001, TC-F009-004, TC-F009-007 |
 
 ### 4.4 Test Type Summary
 
@@ -1091,3 +1067,4 @@ Fifteen further identifiers are retained as `Removed (2026-09-14)` and are exclu
 | 1.2 | 2026-09-14 | F. Jibran | Landing page rebuilt to the four-band structure: the agents, feature, palette, FAQ and community bands (`SEC-003`, `SEC-004`, `SEC-005`, `SEC-008`, `SEC-009` in the v1.1 numbering) removed. TC-F001-001 rewritten for the four anchored bands; TC-F007-002 amended to ban issue, fork, contributor and install counts while allowing a labelled star figure; five mock and figure cases added to F001, three capability-row cases to F002, three stat-strip cases to F003; fifteen cases retired with dated reasons; UC-005 and UC-007 left without executable cases. Fifty-nine cases: 34 positive, 16 negative, 9 exception. Revised in the same pass: the window mock's sidebar was cut back to workspaces only, because the application has no agent panel — `mockAgentRows` and the `MockAgentRow` entity are gone, TC-F001-007 is re-pointed at the new caption `Three workspaces, one of them waiting on your approval.`, and TC-F001-008 now expects five pressed-state buttons (three workspaces plus the selected workspace's two tabs), not eight. |
 | 1.3 | 2026-09-15 | F. Jibran | The withdrawn port claim removed from the site: TC-F009-005 and TC-F009-006 retired and replaced by TC-F009-007, which asserts the absence of any upstream name or Apache-2.0 mention on `/` and `/privacy`. Fifty-eight cases: 33 positive, 17 negative, 9 exception. The footer legal block is now a single column carrying the licence sentence, the trademark disclaimer and the telemetry line; the attribution and non-affiliation sentences and the upstream link are gone (`FR-009.2`, `BR-009.3`, `BR-009.4` remain open in `docs/srs.md`). |
 | 1.4 | 2026-09-15 | F. Jibran | The capability rows stopped printing the repository path their claim was checked against, so TC-F002-005 is retired and TC-F002-003 is retitled and re-pointed straight at the application repository — there is no `sourceFeature` field left to compare against. Fifty-seven cases: 32 positive, 17 negative, 9 exception. Enforced by `scripts/smoke.mjs`, which asserts instead that no repository path appears on the page (`FR-002.4`, `FR-002.6`, `BR-002.1` as amended). |
+| 1.5 | 2026-09-16 | — | The licence and telemetry statements were removed from the footer, and `/privacy` had already been retired. `FR-009.1`, `FR-009.6` and `BR-009.1` are withdrawn; the footer prints only the `MIT` identifier beside the version, and the site makes no telemetry statement anywhere. TC-F009-002 and TC-F009-003 are removed — `/privacy` 308-redirects and the legal block has no render site; TC-F009-001 is narrowed to the licence identifier and the `LICENSE` link, keeping `BR-009.2`; TC-F009-007 no longer scans `/privacy` and no longer expects a licence sentence. Fifty-five cases: 31 positive, 16 negative, 8 exception. The two `scripts/smoke.mjs` checks that asserted the removed prose were retired in the same change. `FR-009.5` and `BR-006.2` remain open in `docs/srs.md`. |

@@ -26,20 +26,20 @@
 
 | Question the accordion answered | Where the answer lives now | Requirement |
 |---------------------------------|---------------------------|-------------|
-| What does it cost? | Footer licence statement — the project is MIT (`SEC-010`) | `FR-009.1`, `BR-009.1` |
+| What does it cost? | **Gone 2026-09-16.** The footer's `MIT` identifier remains; the licence sentence that answered this does not (`BR-009.1` withdrawn) | `BR-009.2` |
 | What happens to the address I submit? | `/privacy` page, linked from the footer, and the waitlist consent line beside the form | `FR-009.5`, `FR-004.1` |
 | Is this an official product of another project? | No longer asked or answered — the affiliation answer was withdrawn on 2026-09-15 with the port claim | `FR-009.2`, `FR-009.3`, `BR-009.3`, `BR-009.4` (withdrawn) |
 | Can I download a build today? | Hero pre-release ribbon, restated in the install band's introduction | `BR-002.5`, `FR-001.1` |
 | Which platforms are supported? | Stat strip — `3 platforms · macOS, Linux, Windows` | `FR-002.7` |
 | Which agents are supported, and how many? | Capability row 04 — the claim, the `21 detected · 9 also configurable` note, and the eight named runtimes | `FR-002.7`, `BR-003.3` |
 | Do I need an account? | The waitlist form's one-field copy; the page holds no login | `NFR-007.3` |
-| Is anything measured about me? | Footer telemetry statement | `FR-009.6` |
+| Is anything measured about me? | **Unanswered 2026-09-16.** The footer telemetry statement is withdrawn and the site states it nowhere (`FR-009.6` withdrawn) | — |
 
 ## Steps That Still Hold, Re-Homed
 
 *What a visitor who would have opened the accordion does today.*
 
-1. Visitor arrives with a cost question → reads the footer's licence statement, which names MIT and links the licence file (`SEC-010`).
+1. Visitor arrives with a cost question → reads the footer's `MIT` identifier beside the version, and can follow the repository link to the `LICENSE` file (`SEC-010`, `BR-009.2`). The licence sentence itself is withdrawn (2026-09-16).
 2. Visitor arrives with a data question → follows `Privacy` in the footer, or reads the consent line directly under the email field before submitting (`FR-004.1`).
 3. Visitor arrives with a provenance question → reads the footer's attribution to the upstream project and its non-affiliation disclaimer.
 4. Visitor arrives asking whether a build exists → reads the hero ribbon before scrolling, which states pre-release status, and the install band, which restates it above the commands (`BR-002.5`).
@@ -74,7 +74,7 @@
 
 | Page ID | Page Name | Role in This Flow |
 |---------|-----------|-------------------|
-| PAGE-001 | Home | Carries the successor bands: `SEC-002` (release state), `SEC-011` (figures), `SEC-013` row 04 (agents), `SEC-006` (install), `SEC-010` (licence, attribution, telemetry). |
+| PAGE-001 | Home | Carries the successor bands: `SEC-002` (release state), `SEC-011` (figures), `SEC-013` row 04 (agents), `SEC-006` (install), `SEC-010` (**narrowed 2026-09-16** — version and `MIT` identifier only). |
 | PAGE-002 | Privacy policy | Carries the data-handling answer that used to be an accordion item. |
 
 ## Data Used
@@ -95,7 +95,7 @@
 
 - [ ] No accordion or disclosure group exists anywhere on the page
 - [ ] No `#faq` anchor exists in the served HTML, and no link points at one
-- [ ] The licence, telemetry, attribution and non-affiliation statements are each present in the footer
+- [ ] The footer's `MIT` identifier renders on every page, and the repository link resolves to the `LICENSE` file. The licence, telemetry, attribution and non-affiliation *sentences* are withdrawn and are no longer expected (`BR-009.1` withdrawn 2026-09-16)
 - [ ] Pre-release status is stated in the hero and restated in the install band
 - [ ] The agent and platform facts are reachable from the stat strip and capability row 04
 - [ ] Data handling is stated on `/privacy` and beside the waitlist form
@@ -109,9 +109,9 @@
 |----------------|------------------------|-----------------------------------|
 | FR-006.1–FR-006.7 | **Withdrawn (v1.2).** The accordion's question set | Retired with `SEC-008`; see the successor table above |
 | BR-006.1–BR-006.5 | **Withdrawn (v1.2).** Accordion behaviour rules | Retired with `SEC-008` |
-| FR-009.1 | Footer carries the licence statement | Retired answer 1 |
+| FR-009.1 | Footer carries the licence statement | **Withdrawn 2026-09-16** — replaced by the `MIT` identifier and the `LICENSE` link (`BR-009.2`) |
 | FR-009.2, FR-009.3 | Footer attribution and non-affiliation disclaimer; trademark disclaimer text | Retired answer 3 |
-| FR-009.6 | Footer telemetry statement | Retired answer 8 |
+| FR-009.6 | Footer telemetry statement | **Withdrawn 2026-09-16** — retired answer 8, unanswered |
 | FR-009.4, FR-009.5 | Privacy page linked from the footer, stating what the form does with the address | Retired answer 2 |
 | FR-004.1 | Waitlist consent line states retention beside the field | Retired answer 2 |
 | FR-002.7 | Stat strip renders the figures, including the detected agent count | Retired answers 5, 6 |

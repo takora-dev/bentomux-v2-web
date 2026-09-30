@@ -103,7 +103,7 @@ Not applicable at the HTTP level. The delivered content is fixed by topic covera
 
 | Question topic | `requiredTopic` | Discharges | Answer must reference |
 |----------------|-----------------|-----------|----------------------|
-| Cost and licensing | `pricing` | `FR-006.1` | The licence state from `ENT-001`, named plainly (`BR-009.1`) |
+| Cost and licensing | `pricing` | `FR-006.1` | The licence identifier from `ENT-001`, printed beside the released version (`BR-009.1` withdrawn 2026-09-16; the sentence form is gone) |
 | Release timing | `release_timing` | `FR-006.1` | That no date is announced yet — and no date may be invented (`BR-006.4`) |
 | Platforms | `platforms` | `FR-006.1` | `SEC-006`; the install commands are the answer, and no release date is named (`BR-006.4`) |
 | Which agents are supported | `agent_compatibility` | `FR-006.1` | `SEC-003`, with both counts and the detected/configurable distinction (`BR-003.3`) |
@@ -125,7 +125,7 @@ Not applicable at the HTTP level. The delivered content is fixed by topic covera
 | Question row control | — | `ENT-006 FaqItem.question` | Rendered control text | Ends with a question mark; is the accessible name |
 | Answer region | — | `ENT-006 FaqItem.answer` | Rendered prose | Present in the HTML before expansion; maximum measure `70ch` |
 | Answer links to owning sections | — | `ENT-006 FaqItem.ownerSection` | Anchor target | Authoritative fact stays in the owning section (`FOWN-001`) |
-| Pricing answer | — | `ENT-001 SiteConfig.licenseId`, `.licenseStatement`, `.licenseFilePublished` | Answer text | Names the licence the repository carries (`BR-009.1`) |
+| Pricing answer | — | `ENT-001 SiteConfig.licenseId`, `.licenseFilePublished` | Answer text | Names the licence the repository carries, as the bare `MIT` identifier (`BR-009.1` withdrawn 2026-09-16) |
 | Upstream credit — **withdrawn 2026-09-15** | — | — | Not rendered | `SiteConfig.attributionStatement` no longer exists on `ENT-001` |
 | Contact affordance | — | `ENT-001 SiteConfig.contactEmail` | `mailto:` link | `mailto:` only — no contact form exists (`BR-007.4`) |
 | Palette count in the themes answer | — | `ENT-004` array length | Numeral in the answer | Derived; a typed literal would drift from the selector |

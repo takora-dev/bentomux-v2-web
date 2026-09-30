@@ -178,7 +178,7 @@ The site is static-first: all content is compiled into the Next.js bundle. The o
 | CON-005 | **Canonical URL is a single configuration constant.** | All absolute URLs derive from one environment variable so the site can move to an owned domain later without a refactor. |
 | CON-006 | **`bentomux.farrasjibran.dev` is a subdomain of a personal domain.** | Apex redirect and cross-domain consolidation are out of scope; the site must be portable to a dedicated domain. |
 | CON-007 | **The Bentomux application contains code ported from Herdr, which is licensed Apache-2.0** (`github.com/herdrdev/herdr`). Verified in `src-tauri/src/detect/manifests.rs` ("Rule strings for Claude Code are ported from herdr's bundled manifest (github.com/herdrdev/herdr)"), `src-tauri/src/detect/rules.rs` ("compact port of herdr's agent-detection idea"), and `src-tauri/src/bridge_config.rs` (`HERDR_ENV`, `HERDR_SOCKET_PATH`, `HERDR_PANE_ID`). | The Apache-2.0 attribution obligation survives whatever licence the project declares for its own code. Herdr must be credited as the upstream source of the ported detection work, and the repository must carry a `NOTICE` file before public launch (`LP-002`, `FR-009.8`). |
-| CON-008 | **The Bentomux repository carries an MIT `LICENSE`** (commit `af49991`, tracked on `master`; 1066 bytes). | The licence the site states is **MIT**, and it is stated plainly rather than deferred (`BR-009.1`). Because the repository holds Apache-2.0-derived code, the MIT declaration is only complete once the `NOTICE` obligation of `CON-007` is discharged (`LP-002`). |
+| CON-008 | **The Bentomux repository carries an MIT `LICENSE`** (commit `af49991`, tracked on `master`; 1066 bytes). | The licence identifier the site prints is **MIT** (`BR-009.1` withdrawn 2026-09-16, so it is stated as a bare identifier rather than a sentence). Because the repository holds Apache-2.0-derived code, the MIT declaration is only complete once the `NOTICE` obligation of `CON-007` is discharged (`LP-002`). |
 | CON-009 | **Agent runtimes are third-party trademarks.** | Names may be used descriptively to indicate compatibility, but must not imply endorsement, and the footer must carry a trademark disclaimer (`BR-009.4`). |
 | CON-010 | **The visual composition is modeled on herdr.dev.** | Layout, spacing, typographic scale, and palette derive from `DESIGN.md`. Text, imagery, and branding must be Bentomux's own — no Herdr copy or assets may be reproduced (`BR-001.7`). |
 | CON-011 | **No CMS.** | Copy changes require a code commit. Content lives in typed modules under `src/content/`. |
@@ -377,7 +377,7 @@ Was an accordion of eight question-and-answer pairs (`SEC-008`, `#faq`). The ban
 
 | Question it answered | Where the answer lives now |
 |----------------------|---------------------------|
-| Pricing and licensing | Footer licence statement (`FR-009.1`, `BR-009.1`) |
+| Pricing and licensing | Footer licence identifier plus the `LICENSE` file link (`BR-009.2`) — **amended 2026-09-16**: the prose statement is withdrawn, see `BR-009.1` |
 | Data handling, retention, deletion | `/privacy` (`FR-009.5`) and the waitlist consent line (`FR-004.1`) |
 | Provenance and Herdr affiliation | Footer attribution and disclaimer (`FR-009.2`, `FR-009.3`, `BR-009.3`) |
 | Are builds available yet | Hero ribbon and the install band's introduction (`BR-002.5`, `FR-005.1`) |
@@ -427,18 +427,18 @@ The accent stays the Bentomux blue `#4c8ef9` on every surface. The application's
 
 **Functional Requirements:**
 
-- FR-009.1: The footer must state the project's license.
+- FR-009.1: **Withdrawn 2026-09-16.** The requirement was that the footer state the project's licence. The footer prints the bare `MIT` identifier and no licence sentence; `BR-009.1` is withdrawn with it.
 - FR-009.2: The footer must credit Herdr as the upstream source of ported detection logic and state its Apache-2.0 license.
 - FR-009.3: The footer must carry a trademark disclaimer covering agent runtime names and third-party marks.
 - FR-009.4: The site must link to a privacy policy page at `/privacy`.
 - FR-009.5: The privacy policy must state what data is collected (email address), the purpose (release notification), the processor (Resend), the retention rule, and how to request deletion.
-- FR-009.6: The footer must state that the desktop application itself collects no telemetry.
+- FR-009.6: **Withdrawn 2026-09-16.** The requirement was that the footer state that the desktop application collects no telemetry. The footer states no telemetry line, and with `/privacy` retired the site makes the claim nowhere. The text survives in `SiteConfig.telemetryStatement` (`src/content/site.ts`) but is not rendered.
 - FR-009.7: The license statement must name the license actually present in the Bentomux repository, and must fall back to deferred language if that file is ever absent.
 - FR-009.8: The repository must carry a `NOTICE` file discharging the Apache-2.0 attribution obligation created by the ported Herdr code. This is a launch precondition, not a site feature: the site states the credit either way, but launch is blocked until the file exists (`LP-002`).
 
 **Business Rules:**
 
-- BR-009.1: The stated license is **MIT**, matching the `LICENSE` file tracked on `master` of `takora-dev/bentomux-v2` (commit `af49991`). It is stated plainly rather than in deferred form, because the file exists (`CON-008`).
+- BR-009.1: **Withdrawn 2026-09-16.** The requirement was that the footer state the licence plainly. The footer now prints only the bare identifier `MIT`, beside the released version, and no licence sentence. `licenseId` still equals the licence declared in the tracked `LICENSE` file, and `BR-009.2` (link the file while it exists) still holds; the prose statement itself is gone.
 - BR-009.2: If the repository's `LICENSE` file is removed or replaced, the deferred wording takes over until the statement matches the repository again: "Open source — the license is being finalised and will be published with the first release." A license statement that does not match the repository is forbidden (`CON-008`).
 - BR-009.3: Attribution must name Herdr and its license, and must link to the upstream repository.
 - BR-009.4: The trademark disclaimer text must be: "All product names, logos, and brands are property of their respective owners. Use of these names does not imply endorsement."
@@ -654,7 +654,7 @@ The site has no authentication and no user accounts. Access control is therefore
 
 | ID | Precondition | Owner | Verdict rule |
 |----|--------------|-------|--------------|
-| LP-001 | `LICENSE` file published in `takora-dev/bentomux-v2` — **satisfied**: an MIT `LICENSE` is tracked on `master` (commit `af49991`) | Site maintainer | Required by `CON-008`; the licence statement names MIT precisely because this holds (`BR-009.1`) |
+| LP-001 | `LICENSE` file published in `takora-dev/bentomux-v2` — **satisfied**: an MIT `LICENSE` is tracked on `master` (commit `af49991`) | Site maintainer | Required by `CON-008`; the footer prints MIT because this holds (`BR-009.1`, narrowed 2026-09-16) |
 | LP-002 | `NOTICE` file crediting Herdr added to `takora-dev/bentomux-v2` — **still open** | Site maintainer | Required by `CON-007`, `FR-009.8`. The site renders the Herdr credit regardless, but the MIT declaration is incomplete without this file |
 | LP-003 | Repository description and homepage URL set on GitHub | Site maintainer | Referenced by Open Graph metadata |
 | LP-004 | Resend sending subdomain verified, or the waitlist endpoint deployed with confirmation email deferred | Site maintainer | Required by `AS-003` |

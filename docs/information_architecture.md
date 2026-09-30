@@ -80,7 +80,7 @@ The order is deliberate and must not be rearranged. Each section answers the que
 | – | SEC-003 | `#agents` | Agent runtime showcase — **Removed** (v1.2) | Superseded by capability row 04, which states the detected and configurable counts in one line. | — | FR-003.1–FR-003.6 |
 | – | SEC-004 | `#features` | Feature showcase — **Removed** (v1.2) | Superseded by SEC-013: the same six claims, five of them merged into capability rows with evidence panels instead of mock panels. | — | FR-002.1–FR-002.6 |
 | – | SEC-005 | `#palettes` | Theme palette preview — **Removed** (v1.2) | The accent stays the Bentomux blue (`#4c8ef9`) and the site ships no theme switcher, so a palette preview advertised a choice the site does not offer. | — | FR-008.1–FR-008.7 |
-| – | SEC-008 | `#faq` | FAQ — **Removed** (v1.2) | Its four load-bearing answers (license, provenance, data handling, repository) now sit in the footer legal block and the install section, which are the places a visitor looks for them. | — | FR-006.1–FR-006.7 |
+| – | SEC-008 | `#faq` | FAQ — **Removed** (v1.2) | Its four load-bearing answers (license, provenance, data handling, repository) were reassigned to the footer legal block and the install section. The footer legal block has since gone too, so the license and data-handling answers now have no home — see `XPG-001` | — | FR-006.1–FR-006.7 |
 | – | SEC-009 | `#community` | Community and repository links — **Removed** (v1.2) | The footer already carried every one of its destinations, and the navigation bar carries the repository link. | — | FR-007.1–FR-007.7 |
 
 **Why the figures come second:** the first thing after the promise is three numbers and a licence. Two of them are counts this repository owns; the star count is read from the GitHub API at render time and the item is dropped rather than guessed when that read fails (`BR-002.3`).
@@ -99,7 +99,7 @@ The order is deliberate and must not be rearranged. Each section answers the que
 | 2 | What is collected | Email address only, submitted voluntarily through the waitlist form | FR-009.5 |
 | 3 | Why | To send one notification when the first release ships, and occasional product announcements | FR-009.5, BR-004.3 |
 | 4 | Who processes it | Resend, named as the email service provider | FR-009.5, BR-009.7 |
-| 5 | What is not collected | No telemetry from the desktop application; no tracking cookies; no third-party advertising | FR-009.6, BR-006.2 |
+| 5 | What is not collected | No telemetry from the desktop application; no tracking cookies; no third-party advertising | **Unanswered — withdrawn 2026-09-16** (`FR-009.6`); `BR-006.2` |
 | 6 | Retention | Retained until release notification, then up to 12 months; deleted on request within 30 days | §4.3 of SRS |
 | 7 | Your control | Unsubscribe link in every email; deletion by email request | FR-009.5 |
 | 8 | Contact | `mailto:` address, linking back to `/` | FR-007.5 |
@@ -224,7 +224,7 @@ Budgets keep the page in one narrative register and prevent any section from bec
 | Capability evidence panel | names the surface, not the claim — rows and chips, no prose beyond one note line |
 | Section heading | 3–10 words |
 | Section introduction | ≤ 40 words |
-| Footer legal block | ≤ 40 words |
+| Footer legal block | **Removed 2026-09-16** — no legal block, so the 40-word budget has no referent |
 
 ---
 
@@ -337,8 +337,8 @@ Was: eight question/answer pairs in an accordion, all answers present in the ser
 
 | Former answer | Now |
 |---------------|-----|
-| Price and licence | `SEC-011` stat strip (MIT) and `SEC-010` legal block |
-| Provenance of the licence | `SEC-010` legal block (`BR-009.1`, `BR-009.2`) — **amended 2026-09-15**: the affiliation half of this answer was withdrawn with the port claim |
+| Price and licence | `SEC-011` stat strip and the footer's `MIT` identifier |
+| Provenance of the licence | **Gone 2026-09-16** — the `SEC-010` legal block that carried this answer (`BR-009.1`, `BR-009.2`) was removed. The affiliation half was already withdrawn 2026-09-15 with the port claim, and the licence half with it. The `LICENSE` file is still reachable from the repository |
 | Data handling | `SEC-007` consent statement and PAGE-002 |
 | Which agents it works with | `SEC-013` row 04 |
 
@@ -353,7 +353,8 @@ Was: a heading, an introduction and four equal action cards (Star, Report a bug,
 ### SEC-010 Footer
 
 - **Purpose:** legal compliance, attribution, secondary navigation
-- **Content:** logo, four link groups, license statement, trademark disclaimer, copyright line
+- **Content:** logo, the `docs` and `compare` links, the slogan, the copyright line, the version and `MIT` identifier, the repository link, the optional `mailto:`
+- **Amended 2026-09-16:** the four link groups, the license statement and the trademark disclaimer no longer exist.
 - **Layout:** two rows on desktop (links above, legal below), single column on mobile
 - **SRS:** FR-001.6, FR-009.1–FR-009.8, BR-009.1–BR-009.8
 
@@ -381,8 +382,9 @@ Was: a heading, an introduction and four equal action cards (Star, Report a bug,
 | Logo linking to `/` | Yes | Yes | Yes | `assets/bentomux.png` |
 | Full navigation bar | Yes | No | No | SEC-001 |
 | Footer with legal statement | Yes | Yes | Yes | SEC-010 |
-| License statement | Yes | Yes | Yes | `BR-009.1`, `BR-009.2` |
-| Licence statement | Yes | Yes | Yes | `BR-009.1` |
+| Licence identifier (`MIT`) | Yes | Yes | Yes | `BR-009.2` — the `LICENSE` file link, still live |
+| ~~License statement~~ | No | No | No | **Withdrawn 2026-09-16** (`BR-009.1`, `FR-009.1`) |
+| ~~Licence statement~~ | No | No | No | **Withdrawn 2026-09-16** (`BR-009.1`) |
 | Trademark disclaimer | Yes | Yes | Yes | `BR-009.4` |
 | Privacy policy link | Yes | No (self) | Yes | `FR-009.4` |
 | Repository link | Yes | Yes | Yes | `FR-007.1` |
@@ -391,7 +393,7 @@ Was: a heading, an introduction and four equal action cards (Star, Report a bug,
 
 **Rules:**
 
-- XPG-001: The legal block is rendered by one shared component on every page. A page cannot omit the license statement or the trademark disclaimer.
+- XPG-001: **Amended 2026-09-16.** The legal block was rendered by one shared component on every page, so a page could not omit the license statement or the trademark disclaimer. Both sentences are withdrawn and there is no legal block left to share. What remains shared is the footer itself, including the `MIT` identifier, which no page can omit.
 - XPG-002: The footer on PAGE-002 and PAGE-003 is the same component as on PAGE-001, without the product anchor group (anchors would target a page the visitor is not on).
 - XPG-003: The canonical URL is emitted from a single metadata helper so no page can forget it.
 
