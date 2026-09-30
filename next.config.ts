@@ -45,13 +45,28 @@ const installerShortLinks = [
 const nextConfig: NextConfig = {
   turbopack: { root: __dirname },
   async redirects() {
-    return installerShortLinks.map(({ source, file }) => ({
-      source,
-      destination: `${RAW_INSTALLERS}/${file}`,
-      /* 307, not 308: curl and proxies cache a permanent redirect hard, so a
-         future move of an installer could not be corrected for those clients. */
-      permanent: false,
-    }));
+    return [
+      ...installerShortLinks.map(({ source, file }) => ({
+        source,
+        destination: `${RAW_INSTALLERS}/${file}`,
+        /* 307, not 308: curl and proxies cache a permanent redirect hard, so a
+           future move of an installer could not be corrected for those clients. */
+        permanent: false,
+      })),
+      /* Docs pages that described features the app never shipped (SSH hosts, a
+         public socket API, a hosted plugin registry). Each now lands on the page
+         that covers the real thing. */
+      ...(
+        [
+          ["/docs/connecting-machines", "/docs/remote"],
+          ["/docs/socket-api", "/docs/plugins"],
+          ["/docs/marketplace", "/docs/plugins"],
+          /* The policy page was retired; the licence and telemetry statements it
+             carried now sit in the footer (SEC-010), which is on every page. */
+          ["/privacy", "/"],
+        ] as const
+      ).map(([source, destination]) => ({ source, destination, permanent: true })),
+    ];
   },
   images: {
     /* IMG-002: AVIF/WebP at display dimensions. */

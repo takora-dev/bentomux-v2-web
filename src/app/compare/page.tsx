@@ -9,18 +9,18 @@ import { buttonClass } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Compare",
-  description: "How Bentomux compares to terminal tabs, tmux and other agent managers.",
+  description: "What Bentomux does that a terminal or tmux does not, and where they are simply the same.",
   alternates: { canonical: "/compare" },
 };
 
 const oneLiners: readonly { title: string; body: string }[] = [
   {
     title: "Bentomux vs terminal tabs",
-    body: "Tabs are throwaway. Bentomux keeps layout, named panes and session restore in one native window.",
+    body: "A tab cannot tell you what is running in it. Bentomux labels the pane, reads what the agent is doing, and surfaces a permission request instead of letting it scroll away.",
   },
   {
     title: "Bentomux vs tmux",
-    body: "tmux keeps terminals alive — so does Bentomux. The difference is a native GUI with zero config, focus mode and one-click output copy.",
+    body: "tmux already splits panes and keeps sessions alive — Bentomux matches both, with no tmux.conf to write. What it adds on top is a native window that knows what an agent is.",
   },
   { title: "Bentomux vs manager apps", body: "Manager apps put worktrees and review queues in a window. Bentomux is the window itself." },
 ] as const;
@@ -31,10 +31,26 @@ const notes: readonly { n: string; title: string; body: string }[] = [
     title: "A window, not tabs in a terminal.",
     body: "Bentomux is a native app — layout, panes and split borders persist as UI, not as a terminal you have to configure.",
   },
-  { n: "02", title: "Persists without config.", body: "Reopen the app and the same window is back — no tmux.conf, no plugin, no rescue script." },
-  { n: "03", title: "Built for agents.", body: "Every pane is a real PTY built to run a coding agent side-by-side, with approval handling and live state." },
-  { n: "04", title: "Keyboard-first, mouse-friendly.", body: "Every action reachable without a mouse — drag and click still work when you want them." },
-  { n: "05", title: "Free and open source.", body: "MIT licensed. Inspect, fork, contribute." },
+  {
+    n: "02",
+    title: "It knows what a pane is running.",
+    body: "Twenty-one agent CLIs are detected and labelled. Nine have a dedicated adapter, which is what makes live state and approval handling possible instead of guesswork.",
+  },
+  {
+    n: "03",
+    title: "Persists without config.",
+    body: "A background process holds the terminals, so quitting the app does not kill your agents. Reopen and the same panes are back — no tmux.conf, no rescue script.",
+  },
+  {
+    n: "04",
+    title: "You can leave the room.",
+    body: "Turn on the remote monitor, scan a QR code, and watch the panes or answer an approval prompt from your phone.",
+  },
+  {
+    n: "05",
+    title: "Free and open source.",
+    body: "MIT licensed. Inspect, fork, contribute.",
+  },
 ] as const;
 
 export default function ComparePage() {
@@ -48,8 +64,8 @@ export default function ComparePage() {
             <p className="text-overline text-accent uppercase">Compare</p>
             <h1 className="max-w-[18ch] text-display-sm">Bentomux against the field</h1>
             <p className="max-w-prose text-body-lg text-text-muted">
-              Most alternatives are either raw terminal tabs or a multiplexer you configure yourself. Bentomux is a
-              native window built to hold agents side-by-side.
+              A terminal gives you a place to type. A multiplexer gives you a grid of them. Bentomux is a native
+              window that knows what is running in each pane &mdash; and what it is asking you for.
             </p>
             <p className="text-caption text-text-subtle">Scrolls sideways on a phone.</p>
           </div>

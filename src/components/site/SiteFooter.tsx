@@ -21,9 +21,6 @@ export async function SiteFooter() {
         <Link href="/compare" className="text-text-muted hover:text-text">
           compare
         </Link>
-        <Link href={site.privacyPath} className="text-text-muted hover:text-text">
-          privacy
-        </Link>
       </div>
 
       <span className="text-text-subtle">the window for coding agents · © {new Date().getFullYear()} Bentomux</span>

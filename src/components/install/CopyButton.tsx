@@ -39,7 +39,7 @@ export function CopyButton({ text }: { text: string }) {
     <button
       type="button"
       onClick={copy}
-      className="copy-control inline-flex min-h-11 items-center gap-2 rounded-sm bg-surface px-3 text-body-sm text-text-muted transition-colors duration-instant ease-out hover:bg-surface-hover hover:text-text md:min-h-8"
+      className="copy-control inline-flex min-h-11 items-center gap-2 rounded-sm bg-surface px-3 text-body-sm text-text-muted transition-colors duration-(--duration-instant) ease-out hover:bg-surface-hover hover:text-text md:min-h-8"
       aria-live={state === "idle" ? undefined : "polite"}
     >
       <CopyIcon className="size-4" />

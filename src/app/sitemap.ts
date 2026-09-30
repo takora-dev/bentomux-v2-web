@@ -2,7 +2,8 @@ import type { MetadataRoute } from "next";
 
 import { site } from "@/content/site";
 
-/** IA URL-001: both indexable routes, both absolute (BR-001.3). */
+/** IA URL-001: every indexable route, all absolute (BR-001.3). The legal
+ *  statements live in the footer (SEC-010), so the site has no policy page. */
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
@@ -19,11 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${site.siteUrl}/compare`,
       changeFrequency: "monthly",
       priority: 0.6,
-    },
-    {
-      url: `${site.siteUrl}${site.privacyPath}`,
-      changeFrequency: "yearly",
-      priority: 0.3,
     },
   ];
 }

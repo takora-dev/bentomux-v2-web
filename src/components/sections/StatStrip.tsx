@@ -22,7 +22,7 @@ export function StatStrip({ stars }: { stars: number | null }) {
             <a
               href={fact.href}
               {...(fact.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="flex h-full items-center gap-3 px-4 py-5 transition-colors duration-instant ease-out hover:bg-surface"
+              className="flex h-full items-center gap-3 px-4 py-5 transition duration-(--duration-fast) ease-out hover:-translate-y-0.5 hover:bg-surface focus-visible:-translate-y-0.5 focus-visible:bg-surface"
             >
               <span className="flex min-w-0 flex-col gap-1">
                 <span className="font-display text-heading font-extrabold tabular-nums">

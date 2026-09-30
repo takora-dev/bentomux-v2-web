@@ -6,6 +6,7 @@ import { site } from "@/content/site";
 import { fetchStarCount } from "@/content/stats";
 
 import { GitHubIcon } from "../ui/icons";
+import { DocsSearch } from "../docs/DocsSearch";
 import { Logo } from "./SkipLink";
 
 /**
@@ -40,6 +41,7 @@ export async function SiteHeader() {
         </Link>
         <span className="flex-1" aria-hidden="true" />
         <div className="hidden items-center gap-6 md:flex">
+          <DocsSearch />
           {navItems.map((item) => (
             <Link
               key={item.id}

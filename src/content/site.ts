@@ -25,7 +25,7 @@ const REPOSITORY_URL = "https://github.com/takora-dev/bentomux-v2";
 /* ENT-001.contactEmail. No address exists anywhere in either repository, so it is
    read from the environment: inventing one would be worse than leaving the
    `mailto:` links out (`FR-007.5`, `BR-007.4`). Set NEXT_PUBLIC_CONTACT_EMAIL
-   and the footer and the privacy page appear. */
+   and the footer gains a write-in link. */
 function resolveContactEmail(): string | null {
   const raw = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim();
   if (!raw) return null;
@@ -54,7 +54,6 @@ export const site = {
   discussionsUrl: `${REPOSITORY_URL}/discussions`,
   /* Used by the structured-data block only (NFR-008.3). */
   operatingSystems: "macOS, Linux, Windows",
-  privacyPath: "/privacy",
   contactEmail,
   licenseId: "MIT",
   licenseStatement: licenseFilePublished

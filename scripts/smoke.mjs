@@ -14,7 +14,6 @@ const BASE = `http://localhost:${PORT}`;
 /* Values the content modules own. Repeated here rather than imported, because
    the modules are TypeScript carrying build-time invariants and this script
    runs against the built server. A drift shows up as a failing check. */
-const PRIVACY_EFFECTIVE_DATE = "2026-09-15";
 
 let failures = 0;
 function check(label, ok, detail = "") {
@@ -194,41 +193,24 @@ async function main() {
       (headers.get("content-security-policy") ?? "").includes("default-src 'self'"),
   );
   const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
-  check("URL-001: the sitemap lists both pages", sitemap.includes("/privacy") && sitemap.includes("<loc>"));
+  check(
+    "URL-001: the sitemap lists every indexable route and no retired one",
+    ["/docs", "/compare", "<loc>"].every((needle) => sitemap.includes(needle)) &&
+      !sitemap.includes("/privacy"),
+  );
   const robots = await (await fetch(`${BASE}/robots.txt`)).text();
   check(
     "robots.txt allows every page and carries no dead endpoint rule",
     /Allow: \//.test(robots) && !/Disallow:/i.test(robots),
   );
 
-  /* TC-F009-002 / UI_PRIVACY_BLOCKS: eight blocks in the fixed order. */
-  const privacy = await (await fetch(`${BASE}/privacy`)).text();
-  const blocks = [
-    "Controller and scope",
-    "What is collected",
-    "What is not collected",
-    "Changes to the policy",
-  ];
+  /* The policy page was retired: the licence and telemetry statements it carried
+     now render in the footer on every page, which BR-009.1 and FR-009.6 cover. */
+  const privacyRedirect = await fetch(`${BASE}/privacy`, { redirect: "manual" });
   check(
-    "UI_PRIVACY_BLOCKS: /privacy renders four blocks in order",
-    blocks.every(
-      (heading, index) =>
-        privacy.includes(heading) &&
-        (index === 0 || privacy.indexOf(heading) > privacy.indexOf(blocks[index - 1])),
-    ),
-  );
-  check(
-    "TC-F009-002 (amended): the policy states that nothing is collected",
-    /Nothing\. This website has no form/.test(privacy) && /local storage/.test(privacy),
-  );
-  check(
-    "UI_PRIVACY_BLOCKS: the policy carries its effective date",
-    /<time[^>]*date(time)?="\d{4}-\d{2}-\d{2}"/i.test(privacy),
-  );
-  check(
-    "XPG-001: the licence sentence matches the footer word for word",
-    privacy.includes("Bentomux is free and open source software, released under the MIT license.") &&
-      html.includes("Bentomux is free and open source software, released under the MIT license."),
+    "the retired /privacy route redirects instead of 404ing",
+    privacyRedirect.status === 308 && privacyRedirect.headers.get("location") === "/",
+    `status ${privacyRedirect.status} -> ${privacyRedirect.headers.get("location")}`,
   );
 
   /* --- spec audit: gaps found in docs/user_flows + docs/system_logics --------- */
@@ -243,16 +225,8 @@ async function main() {
     html.includes("They cover macOS, Linux and Windows"),
   );
   check(
-    "the withdrawn provenance claim is gone from /privacy too",
-    !/herdr/i.test(privacy),
-  );
-  check(
     "BR-009.1/009.2: the licence link renders while licenseFilePublished is true",
-    html.includes("/blob/master/LICENSE") && privacy.includes("/blob/master/LICENSE"),
-  );
-  check(
-    "sys_uc_008 block 8: the changes block names the effective date",
-    privacy.includes(`This version took effect on ${PRIVACY_EFFECTIVE_DATE}.`),
+    html.includes("/blob/master/LICENSE"),
   );
   check(
     "sys_uc_001 step 2: the hero itself names the product",

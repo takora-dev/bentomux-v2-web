@@ -12,7 +12,7 @@ export type ButtonSize = "sm" | "md" | "lg";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-sm font-sans font-medium " +
-  "transition-colors duration-instant ease-out active:translate-y-px " +
+  "transition-colors duration-(--duration-instant) ease-out active:translate-y-px " +
   /* BTN-002: 44px touch target below md, where button height alone is not enough. */
   "min-h-11 md:min-h-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0";
 
@@ -40,7 +40,7 @@ export function buttonClass(
 /** Inline link — §9.2. Underlined inside prose, plain in navigation. */
 export function linkClass(className?: string): string {
   return cx(
-    "text-accent rounded-sm transition-colors duration-instant ease-out hover:text-accent-strong",
+    "text-accent rounded-sm transition-colors duration-(--duration-instant) ease-out hover:text-accent-strong",
     className,
   );
 }

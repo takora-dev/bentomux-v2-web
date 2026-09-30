@@ -4,7 +4,7 @@
    Section copy is fixed here and must not be reworded without revising the IA.
    In-page anchors are stable (IA URL-002). */
 
-import { requireUnique, requireCount, requireNonEmpty, invariant } from "./validate";
+import { requireUnique, requireCount, requireNonEmpty } from "./validate";
 
 export type SectionId = "hero" | "capabilities" | "install";
 
@@ -53,36 +53,3 @@ export const installExtras = {
   pinLabel: "Pinned to one version",
 } as const;
 
-/* PAGE-002 content blocks — sys_uc_008's content contract, in its order. The
-   site takes nothing from the visitor, so the policy states that and nothing
-   else; the blocks that described the waitlist form's email handling went with
-   the form. */
-export const privacyLastUpdated = "2026-09-15";
-
-export type PrivacyBlock = { readonly id: string; readonly heading: string; readonly body: string };
-
-export const privacyBlocks: readonly PrivacyBlock[] = [
-  {
-    id: "scope",
-    heading: "Controller and scope",
-    body: "This policy covers this website. It does not cover the desktop application, which collects nothing, or the agents you run alongside it, which are governed by their own vendors' policies.",
-  },
-  {
-    id: "collected",
-    heading: "What is collected",
-    body: "Nothing. This website has no form, no account and no email list. Nothing you do here is recorded about you.",
-  },
-  {
-    id: "not-collected",
-    heading: "What is not collected",
-    body: "No account, no name, no email address, no analytics, no advertising identifier, no cookie, nothing written to local storage, no session replay, and no third-party script.",
-  },
-  {
-    id: "changes",
-    heading: "Changes to the policy",
-    body: `This version took effect on ${privacyLastUpdated}. There is no CMS: a change to this text is a commit in the repository, so the history of the policy is public.`,
-  },
-] as const;
-
-invariant(privacyBlocks.length === 4, "privacyBlocks must hold the four blocks the site's own policy needs");
-requireUnique(privacyBlocks, (block) => block.id, "privacyBlocks");

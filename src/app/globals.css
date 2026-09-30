@@ -142,6 +142,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* The reset above reaches durations, not `scroll-behavior` — smooth scrolling
+     is motion the visitor did not ask to exempt, so it goes too. Without this
+     the anchor jumps still glide for a reader who asked the OS to stop that. */
+  html {
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ------------------------------------------------------------ mobile menu
@@ -243,5 +250,14 @@
   .copy-control {
     display: none;
   }
+}
+
+/* --------------------------------------------------------- docs search
+   The dialog is a native `<dialog>`, so the backdrop, the focus trap, Esc and
+   the inert background are the platform's. Only the open/closed visibility and
+   the backdrop tint are ours — `display: none` has to be reset or the closed
+   dialog would still paint. */
+.docs-search-dialog:not([open]) {
+  display: none;
 }
 

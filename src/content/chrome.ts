@@ -69,24 +69,11 @@ export function footerGroups(): readonly FooterGroup[] {
  *  `--color-text-muted`; the rest is fine print (§9.14). */
 export const footerLegal = {
   heading: "Site footer",
-  privacyLabel: "Privacy",
   contactLabel: `Email ${site.siteName}`,
   telemetry: site.telemetryStatement,
   licenseLabel: `License (${site.licenseId})`,
 } as const;
 
-/** PAGE-002 — the page is an expanded rendering of the same blocks. The site
- *  collects nothing, so there is no consent to state and no removal request to
- *  route — the contact address, when configured, is just a way to write in. */
-export const privacyPage = {
-  overline: "Legal",
-  heading: "Privacy",
-  intro:
-    "Bentomux is a personal open-source project with no analytics and no forms. This page states plainly what this website does with your data: nothing.",
-  lastUpdatedLabel: "Last updated",
-  contactLabel: `Email ${site.siteName}`,
-  backHomeLabel: "Back to the landing page",
-} as const;
 /** PAGE-003 — one message, two ways out. */
 export const notFoundPage = {
   title: "Page not found",

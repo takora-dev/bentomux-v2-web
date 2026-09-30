@@ -19,9 +19,15 @@ const TONE = {
 
 /** One row's right column (§9.6 CAP-002). Every panel is the same box: hairline border,
  *  raised surface, monospace rows. The five panels differ only in what they
- *  quote, so the eye can compare them down the column. */
+ *  quote, so the eye can compare them down the column. The lift is MOT-001
+ *  legal (transform + colors only) and MOT-002 legal: nothing animates until
+ *  the pointer is already on the box, and MOT-003 collapses it under
+ *  reduced motion. Nothing is clickable here, so the hover is decoration
+ *  rather than an affordance and MOT-005 is not engaged. */
 function EvidencePanel({ evidence }: { evidence: CapEvidence }) {
-  const box = "flex flex-col gap-2 rounded-sm border border-border bg-canvas-raised p-4";
+  const box =
+    "flex flex-col gap-2 rounded-sm border border-border bg-canvas-raised p-4 " +
+    "transition duration-(--duration-fast) ease-out hover:-translate-y-0.5 hover:border-border-strong";
 
   if (evidence.kind === "tabs") {
     return (

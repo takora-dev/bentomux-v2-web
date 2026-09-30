@@ -49,7 +49,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${archivo.variable} h-full w-full`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${archivo.variable} h-full w-full`}>
       <body className="flex min-h-full w-full flex-col antialiased">
         {/* NFR-008.3: structured data describing the project, no third party. */}
         <script

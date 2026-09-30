@@ -107,7 +107,7 @@ export function ComparisonSection() {
                   key={row.id}
                   className={cx(
                     index !== comparisonRows.length - 1 && "border-b border-border",
-                    "hover:bg-surface transition-colors duration-instant ease-out",
+                    "hover:bg-surface transition-colors duration-(--duration-instant) ease-out",
                   )}
                 >
                   <th scope="row" className={cx(tdClass, "font-normal")}>

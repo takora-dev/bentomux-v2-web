@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/docs-search.mjs",
+    "search:index": "node scripts/docs-search.mjs",
     "start": "next start",
     "lint": "eslint",
     "smoke": "node scripts/smoke.mjs"
