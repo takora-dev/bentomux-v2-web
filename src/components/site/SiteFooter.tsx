@@ -18,6 +18,9 @@ export async function SiteFooter() {
         <Link href="/docs" className="text-text-muted hover:text-text">
           docs
         </Link>
+        <Link href="/plugins" className="text-text-muted hover:text-text">
+          plugins
+        </Link>
         <Link href="/compare" className="text-text-muted hover:text-text">
           compare
         </Link>

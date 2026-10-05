@@ -5,7 +5,7 @@ The website for **Bentomux**, a calm desktop app for running coding agents side 
 This repository holds the site only. The desktop application lives at [takora-dev/bentomux-v2](https://github.com/takora-dev/bentomux-v2).
 
 - One scroll, five bands: hero, stat strip, the application window capture, five capability rows, install close
-- Plus `/privacy`, `/sitemap.xml`, `/robots.txt` and a build-time Open Graph image
+- Plus `/docs`, `/plugins`, `/compare`, `/sitemap.xml`, `/robots.txt` and a build-time Open Graph image
 - No database, no cookies, no analytics, no forms — nothing about a visitor is collected
 
 ## Stack
@@ -59,6 +59,7 @@ NEXT_PUBLIC_SITE_URL=https://example.com npm run build && npm run smoke
 src/app/            routes, metadata, icons, sitemap, robots, globals.css
 src/components/
   sections/         Hero, StatStrip, ScreenshotFigure, CapsSection, InstallSection
+  plugins/          the /plugins catalog list (search, paging)
   site/             header, footer, skip link, logo
   ui/               Button, icons, primitives, cx
   install/          command blocks and the copy button
@@ -73,6 +74,12 @@ docs/               the source of truth (below)
 All copy, the agent roster, the capability rows, the install commands and the stat figures live in `src/content/*` and are imported by the components. The modules validate themselves at build time (`src/content/validate.ts`), so counts that must agree — 21 detected agents, 9 configurable, five capability rows, three install platforms — fail the build instead of rendering a wrong or empty section.
 
 The one figure that does not come from this repository is the GitHub star count. It is read from the GitHub API at render time and the strip drops the item entirely when that read fails, rather than showing a stale or invented number.
+
+### The plugin catalog
+
+`/plugins` lists what the community has published. It reads the catalog from GitHub **once, at build time** (`fetchCatalog` in `src/content/plugins.ts`) and prerenders it, then searches and pages in the browser over that list. That split is forced by GitHub's unauthenticated limits — 60 core requests an hour and 10 search requests a minute, per IP — so a per-visitor fetch would hand the visitor a rate-limit error instead of a catalog.
+
+The rules are the desktop application's, repeated rather than invented: the topic `bentomux-plugin`, forks and archived repos dropped, 30 rows maximum, most-starred first with the repository name breaking ties, ten rows a page. `src/content/plugins.ts` mirrors `src/shared/marketplace.ts` in `takora-dev/bentomux-v2`, because the website and the app must page identically. When GitHub does not answer the build, the list is empty with a stated reason and a link to the live topic search — never a stale or invented row.
 
 ## Docs are the source of truth
 
@@ -96,9 +103,9 @@ Working on this repository means updating the relevant document in the same chan
 
 Build with `NEXT_PUBLIC_SITE_URL` set to the canonical origin, then serve the output. Any Node host that can run `next build` and `next start` works.
 
-Every route is prerendered at build time — `/`, `/privacy`, the icons, the Open Graph image, `sitemap.xml` and `robots.txt` are all static. The only runtime work is the star count: that one GitHub API read is cached for an hour (`revalidate: 3600`) and the strip drops the figure if the read fails.
+Every route is prerendered at build time — `/`, `/docs`, `/plugins`, `/compare`, the icons, the Open Graph image, `sitemap.xml` and `robots.txt` are all static. The only runtime work is the star count: that one GitHub API read is cached for an hour (`revalidate: 3600`) and the strip drops the figure if the read fails.
 
-The build itself reaches the network once, for the Google Fonts fetch that `next/font` performs.
+The build itself reaches the network twice: the Google Fonts fetch that `next/font` performs, and the one catalog sweep `/plugins` needs. A GitHub outage at build time empties the catalog rather than failing the build, and the page says so.
 
 Two things to remember when deploying:
 

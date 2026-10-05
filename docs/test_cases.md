@@ -112,10 +112,20 @@ Three families of cases are unusual and worth calling out before reading the ind
 | TC-F009-002 | F009 | UC-008 | Removed (2026-09-16) — `/privacy` retired; substance held by TC-F009-004 | — |
 | TC-F009-003 | F009 | UC-008 | Removed (2026-09-16) — both render sites gone | — |
 | TC-F009-004 | F009 | UC-008 | No tracking: no cookie, no third-party script, no storage write | Negative |
-| TC-F009-005 | F009 | UC-008 | The MIT statement is not the only licence text, and no page denies it | Negative |
-| TC-F009-006 | F009 | UC-008 | The attribution credit appears while the duty it creates is still open | Exception |
+| TC-F009-005 | F009 | UC-008 | The MIT statement is not the only licence text, and no page denies it | Removed |
+| TC-F009-006 | F009 | UC-008 | The attribution credit appears while the duty it creates is still open | Removed |
+| TC-F010-001 | F010 | UC-001 | `/plugins` renders one `h1` and states the discovery topic | Positive |
+| TC-F010-002 | F010 | UC-001 | The bar and the footer both link to `/plugins`, and the route is in the sitemap | Positive |
+| TC-F010-003 | F010 | UC-001 | Rows are most-starred first with the repo name breaking ties | Positive |
+| TC-F010-004 | F010 | UC-001 | A repo with no usable release is listed as not installable with the app's reason | Exception |
+| TC-F010-005 | F010 | UC-001 | Search matches name, description and owner/repo, case-insensitively | Positive |
+| TC-F010-006 | F010 | UC-001 | Paging clamps an out-of-range page instead of rendering blank | Exception |
+| TC-F010-007 | F010 | UC-001 | The page makes no GitHub request in the visitor's browser | Negative |
+| TC-F010-008 | F010 | UC-001 | An empty or failed sweep shows a reason and a live topic-search link, never a stale row | Exception |
+| TC-F010-009 | F010 | UC-001 | The page claims no sort the app does not implement | Negative |
+| TC-F010-010 | F010 | UC-001 | The page offers no hosted registry and no site-side install or download | Negative |
 
-`Removed` rows are retained identifiers, not executable cases: the band they exercised was deleted from the landing page on 2026-09-14, and each one carries a dated removal note in §3.2, §3.6, §3.7 and §3.8 with the reason it no longer applies. The fifteen live cases added in v1.2 are TC-F001-007 … TC-F001-011, TC-F002-004 … TC-F002-006 and TC-F003-005 … TC-F003-007.
+`Removed` rows are retained identifiers, not executable cases: the band they exercised was deleted from the landing page on 2026-09-14, and each one carries a dated removal note in §3.2, §3.6, §3.7 and §3.8 with the reason it no longer applies. The fifteen live cases added in v1.2 are TC-F001-007 … TC-F001-011, TC-F002-004 … TC-F002-006 and TC-F003-005 … TC-F003-007. The ten live cases added in v1.6 are TC-F010-001 … TC-F010-010.
 
 ## 3. Test Cases
 
@@ -975,6 +985,150 @@ Three families of cases are unusual and worth calling out before reading the ind
 | Test Steps | 1. Fetch the page  2. Scan the rendered HTML case-insensitively for the upstream project's name  3. Scan for any Apache-2.0 mention  4. Confirm the `MIT` identifier still renders |
 | Expected Result | The page contains neither the upstream name nor any Apache-2.0 mention; the `MIT` identifier renders as before. Enforced by the negative assertions in `scripts/smoke.mjs` and by TC-F009-001 (`FR-009.2` and `BR-009.1` withdrawn) |
 
+### 3.10 Feature F010: Plugin Marketplace Index
+
+**Enforcement:** every case in this section is asserted by `scripts/smoke.mjs` against the built server except TC-F010-003, TC-F010-005, TC-F010-006 and TC-F010-007, which are properties of `src/content/plugins.ts` and are checked by reading the module. The filtering, ordering and clamping functions mirror `src/shared/marketplace.ts` in `takora-dev/bentomux-v2`, which covers them with its own tests.
+
+**TC-F010-001: `/plugins` renders one `h1` and states the discovery topic**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-001 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | The page identifies itself and names the rule that fills it |
+| Type | Positive |
+| Preconditions | Production build served from `next start` |
+| Test Data | The SSR HTML of `/plugins` |
+| Test Steps | 1. Fetch `/plugins`  2. Count `h1` elements  3. Search the rendered text for the topic |
+| Expected Result | Exactly one `h1`; the rendered page states `bentomux-plugin`. Enforced by `scripts/smoke.mjs` (`FR-010.1`) |
+
+**TC-F010-002: The bar and the footer both link to `/plugins`, and the route is in the sitemap**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-002 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | The new route is reachable and indexed |
+| Type | Positive |
+| Preconditions | Production build served |
+| Test Data | `/plugins` HTML, `sitemap.xml` |
+| Test Steps | 1. Fetch `/plugins`  2. Count `href="/plugins"` occurrences  3. Fetch `sitemap.xml` and look for the route |
+| Expected Result | At least two `/plugins` links on the page (bar and footer); `/plugins` appears in the sitemap and `/privacy` still does not. Enforced by `scripts/smoke.mjs` (`FR-010.7`, `URL-001`) |
+
+**TC-F010-003: Rows are most-starred first with the repo name breaking ties**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-003 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | The order matches the app's, and stays stable between builds |
+| Type | Positive |
+| Preconditions | Two repos with equal star counts are in the catalog |
+| Test Data | `fetchCatalog()` output |
+| Test Steps | 1. Read the returned list  2. Compare adjacent star counts  3. For equal counts, compare repo names case-insensitively |
+| Expected Result | Stars never increase down the list; equal-star rows are ordered by lowercased repo name (`FR-010.2`, `by_stars` in `marketplace.rs`) |
+
+**TC-F010-004: A repo with no usable release is listed as not installable with the app's reason**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-004 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | A discoverable repo that cannot be installed is explained, not hidden |
+| Type | Exception |
+| Preconditions | A repo carrying the topic has no release, or a release with zero, two, or undigested `.zip` assets |
+| Test Data | The release JSON for that repo |
+| Test Steps | 1. Run `fetchCatalog()`  2. Find the row for the repo  3. Read `installable` and `note` |
+| Expected Result | The row is present, `installable` is false, and `note` names the reason in the app's own words — "No published release yet.", "Release X has no .zip asset…", "Release X has N .zip assets…", or the missing-digest sentence (`FR-010.4`) |
+
+**TC-F010-005: Search matches name, description and owner/repo, case-insensitively**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-005 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | A visitor finds a plugin by any of the three strings they might remember |
+| Type | Positive |
+| Preconditions | Catalog loaded |
+| Test Data | A mixed-case query matching each field in turn |
+| Test Steps | 1. Call `filterPlugins(list, query)` with the query upper- and lower-cased  2. Compare the result sets |
+| Expected Result | Both cases return the same rows; a query matching only the description or only the owner/repo still matches (`FR-010.5`) |
+
+**TC-F010-006: Paging clamps an out-of-range page instead of rendering blank**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-006 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | A result set that shrinks under the current page does not strand the view |
+| Type | Exception |
+| Preconditions | A list of 11 rows |
+| Test Data | `paginate(list, 1)` then `paginate(list.slice(0, 5), 1)` |
+| Test Steps | 1. Paginate to page 2  2. Shrink the list to fewer than one page  3. Read the returned `page` |
+| Expected Result | The returned page is clamped into range, `pages` is at least 1, and `items` is never empty because the page was out of range (`FR-010.6`, `paginate` in `src/shared/marketplace.ts`) |
+
+**TC-F010-007: The page makes no GitHub request in the visitor's browser**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-007 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | The visitor's IP is not spent on the catalog |
+| Type | Negative |
+| Preconditions | Production build served; network log open |
+| Test Data | None |
+| Test Steps | 1. Load `/plugins` with the network log open  2. Type in the search box and page through the list  3. Classify every request's origin |
+| Expected Result | No request to `api.github.com` or any other third-party origin; the catalog arrives in the prerendered document and every interaction is local (`FR-010.7`) |
+
+**TC-F010-008: An empty or failed sweep shows a reason and a live topic-search link, never a stale row**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-008 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | A GitHub outage degrades the page honestly |
+| Type | Exception |
+| Preconditions | The build's GitHub reads fail, or the topic matches nothing |
+| Test Data | `fetchCatalog()` output with a null response |
+| Test Steps | 1. Run `fetchCatalog()` with the API unreachable  2. Read `live`, `note` and `plugins` |
+| Expected Result | `plugins` is empty, `live` is false, `note` states the reason, and the page renders that note plus the live topic-search link. No row is fabricated or carried over (`FR-010.8`, the same rule `stats.ts` follows for the star count) |
+
+**TC-F010-009: The page claims no sort the app does not implement**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-009 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | The page does not borrow a sort from the reference layout |
+| Type | Negative |
+| Preconditions | Production build served |
+| Test Data | The SSR HTML of `/plugins` |
+| Test Steps | 1. Fetch the page  2. Scan case-insensitively for `trending`, `newest`, `most recent`, `recently updated`, `new to the herd` |
+| Expected Result | None of the five appear. Enforced by `scripts/smoke.mjs` (`FR-010.2`, `BR-010.3`) |
+
+**TC-F010-010: The page offers no hosted registry and no site-side install or download**
+
+| Field | Value |
+|-------|-------|
+| TC ID | TC-F010-010 |
+| Related UC | UC-001 |
+| Related Feature | F010 |
+| Test Scenario | The discovery surface does not impersonate the app |
+| Type | Negative |
+| Preconditions | Production build served |
+| Test Data | The SSR HTML of `/plugins` |
+| Test Steps | 1. Fetch the page  2. Scan for a hosted-registry claim and for a download control  3. Confirm the page names GitHub as the catalog and the app as the installer |
+| Expected Result | No hosted-registry claim and no download control; the page says GitHub is the catalog and points at Plugin Studio and the app's review screen. Enforced by `scripts/smoke.mjs` (`BR-010.1`, `BR-010.2`) |
+
 ## 4. Traceability Matrix
 
 ### 4.1 Test Case → Requirement
@@ -990,6 +1144,7 @@ Three families of cases are unusual and worth calling out before reading the ind
 | F007 | Project Links, Community and Repository Star | TC-F007-002, TC-F007-003; TC-F007-001 and TC-F007-004 removed |
 | F008 | Theme Palette Preview | All six removed (2026-09-14) |
 | F009 | Licensing, Attribution and Privacy | TC-F009-001 (narrowed), TC-F009-004, TC-F009-007; TC-F009-002 and -003 removed 2026-09-16 |
+| F010 | Plugin Marketplace Index | TC-F010-001 … TC-F010-010 |
 
 ### 4.2 Test Case → Use Case
 
@@ -1021,12 +1176,12 @@ Three families of cases are unusual and worth calling out before reading the ind
 
 | Type | Count |
 |------|-------|
-| Positive | 34 |
-| Negative | 16 |
-| Exception | 9 |
-| **Total** | **59** |
+| Positive | 36 |
+| Negative | 17 |
+| Exception | 11 |
+| **Total** | **64** |
 
-Fifteen further identifiers are retained as `Removed (2026-09-14)` and are excluded from the counts above: nine positive, four negative and two exception cases whose bands no longer exist.
+Twenty further identifiers are retained as `Removed` and are excluded from the counts above: cases whose bands or render sites no longer exist. They are kept, never reused.
 
 ## 5. Test Execution Notes
 
@@ -1068,3 +1223,4 @@ Fifteen further identifiers are retained as `Removed (2026-09-14)` and are exclu
 | 1.3 | 2026-09-15 | F. Jibran | The withdrawn port claim removed from the site: TC-F009-005 and TC-F009-006 retired and replaced by TC-F009-007, which asserts the absence of any upstream name or Apache-2.0 mention on `/` and `/privacy`. Fifty-eight cases: 33 positive, 17 negative, 9 exception. The footer legal block is now a single column carrying the licence sentence, the trademark disclaimer and the telemetry line; the attribution and non-affiliation sentences and the upstream link are gone (`FR-009.2`, `BR-009.3`, `BR-009.4` remain open in `docs/srs.md`). |
 | 1.4 | 2026-09-15 | F. Jibran | The capability rows stopped printing the repository path their claim was checked against, so TC-F002-005 is retired and TC-F002-003 is retitled and re-pointed straight at the application repository — there is no `sourceFeature` field left to compare against. Fifty-seven cases: 32 positive, 17 negative, 9 exception. Enforced by `scripts/smoke.mjs`, which asserts instead that no repository path appears on the page (`FR-002.4`, `FR-002.6`, `BR-002.1` as amended). |
 | 1.5 | 2026-09-16 | — | The licence and telemetry statements were removed from the footer, and `/privacy` had already been retired. `FR-009.1`, `FR-009.6` and `BR-009.1` are withdrawn; the footer prints only the `MIT` identifier beside the version, and the site makes no telemetry statement anywhere. TC-F009-002 and TC-F009-003 are removed — `/privacy` 308-redirects and the legal block has no render site; TC-F009-001 is narrowed to the licence identifier and the `LICENSE` link, keeping `BR-009.2`; TC-F009-007 no longer scans `/privacy` and no longer expects a licence sentence. Fifty-five cases: 31 positive, 16 negative, 8 exception. The two `scripts/smoke.mjs` checks that asserted the removed prose were retired in the same change. `FR-009.5` and `BR-006.2` remain open in `docs/srs.md`. |
+| 1.6 | 2026-10-05 | F. Jibran | Added `F010`, the plugin marketplace index at `/plugins`, with ten live cases `TC-F010-001` … `TC-F010-010`. They cover the single `h1` and the discovery topic, the bar/footer/sitemap wiring, the stars-first order and its tie-break, the not-installable reasons, case-insensitive search, page clamping, the absence of any browser-side GitHub request, the honest empty state, the ban on sorts the app does not implement, and the ban on claiming a hosted registry or a site-side install. Four of the ten are properties of `src/content/plugins.ts` rather than of rendered HTML, and the module mirrors `src/shared/marketplace.ts` in `takora-dev/bentomux-v2`, which carries its own tests for the filter and the clamp. Sixty-four live cases: 36 positive, 17 negative, 11 exception. |

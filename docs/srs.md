@@ -458,6 +458,40 @@ The accent stays the Bentomux blue `#4c8ef9` on every surface. The application's
 
 ---
 
+### 3.10 F010: Plugin Marketplace Index (Priority: Medium)
+
+**Description:** The public `/plugins` route (PAGE-004): the published plugin catalog, install and publish guidance, and the honesty rules that keep the page from promising more than the desktop application does.
+
+**Functional Requirements:**
+
+- FR-010.1: `/plugins` must list every public GitHub repository carrying the topic `bentomux-plugin`, excluding forks and archived repositories, capped at 30 rows — the same topic, exclusions and cap the application's marketplace sweep uses.
+- FR-010.2: The list must be ordered most-starred first, with the repository name breaking a tie, so paging is stable between builds.
+- FR-010.3: Each row must carry the repository name, the release tag, the repository description, the owner/repo, the star count, the release asset download count, and a link to the release (or the repository when there is no release).
+- FR-010.4: A repository whose latest release has no `.zip`, more than one `.zip`, or no published sha256 digest must be listed as not installable, with the reason the application gives.
+- FR-010.5: Search must match the display name, the description and the owner/repo, case-insensitively, over the list already in memory rather than re-querying GitHub.
+- FR-010.6: The list must page at ten rows with Previous/Next and a `Page N of M` readout, clamping an out-of-range page rather than rendering blank.
+- FR-010.7: The catalog must be read from GitHub at build time and prerendered; the page must make no GitHub request in the visitor's browser.
+- FR-010.8: When GitHub does not answer the build, the list must be empty with a stated reason and a link to the live topic search — never a stale or invented row.
+- FR-010.9: The page must carry publishing guidance requiring both the topic and a release, and must not present the topic alone as sufficient.
+
+**Business Rules:**
+
+- BR-010.1: The page must not imply a hosted registry, an account, a submission form or a moderation queue. GitHub is the catalog.
+- BR-010.2: The page must not offer a site-side install or download. Installation happens in the application, which verifies the asset digest and shows the permissions before anything runs.
+- BR-010.3: Only the ordering the application implements may be claimed — no trending, newest or recency sort (`BR-016.2` in the application repository's `docs/PLUGIN_MARKETPLACE.md`).
+- BR-010.4: Star counts and download counts must be labelled as GitHub's numbers, not as an endorsement by Bentomux.
+- BR-010.5: The plugin name, description and repository shown in a row come from GitHub repository metadata; the page must not present them as the manifest's own fields.
+
+**Acceptance Criteria:**
+
+- [ ] `/plugins` is in the sitemap and carries `canonical: /plugins`
+- [ ] The bar and the footer both link to `/plugins`
+- [ ] The rendered page states the topic `bentomux-plugin` and the ordering rule
+- [ ] The rendered page contains no trending, newest or recency claim
+- [ ] The rendered page offers no install or download control
+
+---
+
 ## 4. Data Requirements
 
 ### 4.1 Core Business Objects
@@ -649,6 +683,7 @@ The site has no authentication and no user accounts. Access control is therefore
 | F007 | Project Links, Community and Repository Star | Medium | F001 | Implemented |
 | F008 | Theme Palette Preview | Medium | F001 | Removed in v1.2 — the site ships no theme switcher |
 | F009 | Licensing, Attribution and Privacy | High | F001 | Implemented |
+| F010 | Plugin Marketplace Index | Medium | F001, external GitHub API | Implemented |
 
 **Launch preconditions** — the site must not be announced publicly until all hold:
 
@@ -714,3 +749,4 @@ Each entry records the decision taken for v1 so that implementation is unambiguo
 | 1.3 | 2026-09-15 | F. Jibran | The repository-evidence line was cut from the capability rows. `FR-002.4` no longer lists it, `FR-002.6` no longer requires a row to record the source feature it comes from, `BR-002.1` keeps the honesty rule but drops the clause that made a row name an existing path, and `BR-002.4` loses its `src-tauri/…` carve-out because no path is rendered any more. `ENT-013.sourceFeature`, the five values it held and the smoke assertion that counted them were deleted with it; the glossary entry for the capability row, the `CapabilityRow` data object and two acceptance criteria were restated. The evidence panel, its five kinds and the derived counts are unchanged. Enforced by `scripts/smoke.mjs`, which now asserts that no repository path appears on the page. |
 | 1.4 | 2026-09-15 | F. Jibran | The head gained its icon: `FR-001.8` now also requires a PNG favicon and an Apple touch icon, and the matching acceptance criterion names both `rel` values. They are served by the app-directory files `src/app/icon.png` and `src/app/apple-icon.png`, so no icon tag is hand-written. Separately, the logo's source was re-exported at 1024px: the hero renders the mark at up to 480 CSS px and the 504px file left it soft on a retina screen; `scripts/smoke.mjs` asserts the optimiser can still return ≥ 960px. |
 | 1.5 | 2026-09-15 | F. Jibran | The install commands were shortened onto the site's own origin. `next.config.ts` now answers `/install.sh`, `/install.ps1` and `/install.cmd` with a 307 to `installers/install.sh`, `install.ps1` and `install.cmd`, and every command in `F005` names one of those instead of the 88-character `raw.githubusercontent.com` URL: the macOS and Linux one-liner becomes `curl -fsSL <site>/install.sh \| sh`, the `.deb` and pinned forms keep their suffixes, and Windows uses `<site>/install.ps1` and `<site>/install.cmd`. `BR-005.1` is amended to compare against the application repository's README install block, which now publishes the short form, and `BR-005.2` is amended so the site's own origin may appear as a command host while remaining a redirector rather than a mirror — no copy of any installer exists on the site and `raw.githubusercontent.com` no longer appears in rendered copy. A host invariant in `src/content/install.ts` fails the build when a command names anything outside `SiteConfig.siteUrl` and the repository, which is the guard `BR-005.2` previously described without having. Because the host is `SiteConfig.siteUrl`, `NEXT_PUBLIC_SITE_URL` and the README block must name the same host; `.env.example` was corrected to the deployed `bentomux.netlify.app` (the previous `bentomux.farrasjibran.dev` does not resolve) and the external-interface table's hosting entry was corrected from Vercel to Netlify to match the deployment the rules are now written against. `scripts/smoke.mjs` asserts the command shape, the short-link paths and the absence of any `raw.githubusercontent.com` URL, since the host is inlined at build time and can no longer be asserted as a literal. |
+| 1.6 | 2026-10-05 | F. Jibran | Added `F010`, the public plugin marketplace index at `/plugins` (PAGE-004). The route lists every repository carrying the `bentomux-plugin` topic, most-starred first with the repository name breaking ties, searched and paged in the browser over a catalog read from GitHub at build time — the app's own rules from `src/shared/marketplace.ts`, repeated because the two surfaces must page identically. Ten requirements (`FR-010.1`–`FR-010.9`) and five rules (`BR-010.1`–`BR-010.5`) cover the topic, the exclusions and the 30-row cap, the ordering, the row contents, the not-installable reasons, search, paging and clamping, the build-time fetch, the honest empty state, and the publishing guidance that requires both the topic and a release. The rules exist to stop the page promising what the application does not: no hosted registry, no site-side install, no sort the app does not implement, and star/download counts labelled as GitHub's. `URL-007` in `docs/information_architecture.md` holds the same line at the route level. |

@@ -8,7 +8,6 @@
    used to point at went with the waitlist band. */
 
 import { site } from "./site";
-import { anchors } from "./sections";
 import { requireUnique } from "./validate";
 
 export type NavKind = "anchor" | "external" | "action";
@@ -22,6 +21,7 @@ export type NavItem = {
 
 export const navItems: readonly NavItem[] = [
   { id: "docs", label: "Docs", href: "/docs", kind: "external" },
+  { id: "plugins", label: "Plugins", href: "/plugins", kind: "external" },
   { id: "compare", label: "Compare", href: "/compare", kind: "external" },
 ] as const;
 

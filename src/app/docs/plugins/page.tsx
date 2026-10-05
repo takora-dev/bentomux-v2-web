@@ -152,8 +152,18 @@ export default function Page() {
             against a pinned SHA-256 before anything is unpacked.
           </p>
           <p className="text-body-sm text-text-muted">
-            There is no hosted registry. Plugins are distributed however you like &mdash; a git repository, a
-            release asset, a zip on a file share &mdash; and installed by URL or from disk.
+            There is no hosted registry of our own. GitHub is the catalog: a public repository carrying the topic{" "}
+            <code className="rounded-sm bg-surface px-1.5 py-0.5 text-mono">bentomux-plugin</code> and a release with
+            exactly one <code className="rounded-sm bg-surface px-1.5 py-0.5 text-mono">.zip</code> asset is
+            discoverable, and the app verifies the asset&apos;s published sha256 before anything is unpacked.
+          </p>
+          <p className="text-body-sm text-text-muted">
+            The{" "}
+            <Link href="/plugins" className="text-accent underline underline-offset-2">
+              plugin marketplace page
+            </Link>{" "}
+            lists what is currently published, most-starred first. It is a discovery surface, not an installer:
+            the app is what downloads, verifies and installs a release.
           </p>
         </section>
 

@@ -206,7 +206,7 @@ async function main() {
   const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
   check(
     "URL-001: the sitemap lists every indexable route and no retired one",
-    ["/docs", "/compare", "<loc>"].every((needle) => sitemap.includes(needle)) &&
+    ["/docs", "/plugins", "/compare", "<loc>"].every((needle) => sitemap.includes(needle)) &&
       !sitemap.includes("/privacy"),
   );
   const robots = await (await fetch(`${BASE}/robots.txt`)).text();
@@ -278,6 +278,55 @@ async function main() {
   check(
     "dead bands: no footer, palette or FAQ rule survives in the stylesheet",
     !/faq|palette/i.test(css),
+  );
+
+  /* --- PAGE-004 /plugins: the public marketplace index ----------------------- */
+  const plugins = await fetch(`${BASE}/plugins`);
+  const pluginsHtml = await plugins.text();
+  check("static render: GET /plugins is 200", plugins.status === 200);
+  check(
+    "PAGE-004: the marketplace page names itself once",
+    (pluginsHtml.match(/<h1[\s>]/g) ?? []).length === 1 &&
+      pluginsHtml.includes("Plugins, built by the herd"),
+  );
+  /* The topic is the discovery rule, and it is the one string the page and the
+     app must agree on. Repeated here rather than imported, like every other
+     content constant in this script. */
+  check(
+    "PAGE-004: the page states the discovery topic",
+    pluginsHtml.includes("bentomux-plugin"),
+  );
+  check(
+    "PAGE-004: the page carries the app's install path and the publish rules",
+    pluginsHtml.includes("Browse marketplace") &&
+      pluginsHtml.includes("gh release create") &&
+      pluginsHtml.includes("gh repo edit --add-topic bentomux-plugin") &&
+      pluginsHtml.includes("bentomux --plugin-validate"),
+  );
+  /* PAGE-004 / URL-007: the marketplace has no hosted server of its own, so the
+     page must not imply one, and it must not offer a download only the app can
+     perform. */
+  check(
+    "URL-007: the page promises no hosted registry and no site-side install",
+    !/hosted registry/i.test(pluginsHtml) &&
+      !/Download (the )?plugin/i.test(pluginsHtml) &&
+      /GitHub is the catalog/i.test(pluginsHtml),
+  );
+  /* URL-007: only the order the app actually implements may be claimed. */
+  check(
+    "URL-007: no sort the app does not implement is claimed",
+    !/\b(trending|newest|most recent|recently updated|new to the herd)\b/i.test(pluginsHtml),
+  );
+  /* PAGE-004: the marketplace is not a separate installation path — the app's
+     review screen is where permissions are shown, and the page must say so. */
+  check(
+    "PAGE-004: the page points at the app's review screen for permissions",
+    pluginsHtml.includes("permissions are a declared contract") &&
+      pluginsHtml.includes("before anything runs"),
+  );
+  check(
+    "NAV-005 / FR-001.3: the bar and the footer both carry the plugins link",
+    (pluginsHtml.match(/href="\/plugins"/g) ?? []).length >= 2,
   );
   /* --- design system §10.2: brand assets ------------------------------------- */
   check(
