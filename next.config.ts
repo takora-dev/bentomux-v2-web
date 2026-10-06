@@ -10,13 +10,21 @@ const scriptSrc =
     ? "script-src 'self' 'unsafe-inline'"
     : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
 
+/* Google Analytics 4, when the measurement ID is set. gtag.js loads the
+   transport from the tag manager host and posts to the collection endpoint, so
+   it needs a wider script and connect policy. Unset, the policy keeps
+   'self' only (NFR-002.7). */
+const GA_HOSTS = "https://www.googletagmanager.com";
+const GA_IMG = "https://www.googletagmanager.com https://www.google-analytics.com";
+const enableAnalytics = !!process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
 const contentSecurityPolicy = [
   "default-src 'self'",
-  scriptSrc,
+  enableAnalytics ? `${scriptSrc} ${GA_HOSTS}` : scriptSrc,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  enableAnalytics ? `img-src 'self' data: blob: ${GA_IMG}` : "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  enableAnalytics ? `connect-src 'self' ${GA_IMG}` : "connect-src 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",

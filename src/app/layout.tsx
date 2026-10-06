@@ -73,6 +73,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="install-platform-detection" strategy="beforeInteractive">
           {platformDetectionScript}
         </Script>
+        {site.gaMeasurementId ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${site.gaMeasurementId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${site.gaMeasurementId}');`}
+            </Script>
+          </>
+        ) : null}
       </body>
     </html>
   );

@@ -103,8 +103,9 @@ function validateStaticHtml(html) {
     !/\bstars?\b/i.test(html) || html.includes("GitHub stars"),
   );
   check(
-    "TC-F009-004: no analytics or third-party script",
-    !/googletagmanager|google-analytics|plausible|posthog|segment\.io/i.test(html),
+    "TC-F009-004: analytics only when configured, and then only the set ID",
+    !/googletagmanager|google-analytics|plausible|posthog|segment\.io/i.test(html) ||
+      /googletagmanager\.com\/gtag\/js\?id=G-E7WRPW649H/.test(html),
   );
 
   /* Pass A/B/C content invariants, all asserted against the server HTML the

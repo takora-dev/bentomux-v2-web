@@ -35,6 +35,17 @@ function resolveContactEmail(): string | null {
 
 const contactEmail = resolveContactEmail();
 
+/* GA4 measurement ID. Unset means no analytics ships and the CSP keeps its
+   'self'-only policy. A set value must look like the ID in the snippet. */
+function resolveGaId(): string | null {
+  const raw = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim();
+  if (!raw) return null;
+  invariant(/^G-[A-Z0-9]{6,}$/.test(raw), "NEXT_PUBLIC_GA_MEASUREMENT_ID must look like G-XXXXXXXXXX");
+  return raw;
+}
+
+const gaMeasurementId = resolveGaId();
+
 /* CON-008 / BR-009.1: the repository carries an MIT `LICENSE` (commit af49991,
    tracked on master), so the licence is stated plainly and a licence link may
    render. Setting this to false restores the BR-009.2 deferred wording and
@@ -66,6 +77,9 @@ export const site = {
     "All product names, logos, and brands are property of their respective owners. Use of these names does not imply endorsement.",
   telemetryStatement:
     "The desktop application collects no telemetry. It sends nothing anywhere unless you enable the remote monitor.",
+  /* null when NEXT_PUBLIC_GA_MEASUREMENT_ID is unset; layout.tsx ships no
+     analytics script and next.config.ts keeps the CSP closed in that case. */
+  gaMeasurementId,
   copyrightLine: `© ${new Date().getFullYear()} Bentomux — a personal open-source project.`,
 } as const;
 
