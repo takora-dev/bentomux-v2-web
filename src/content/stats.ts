@@ -1,12 +1,14 @@
 /* StatFact — ENT-015. The four facts in the strip under the hero (IA SEC-011,
    design system §9.8 STAT-001–STAT-003).
 
-   BR-002.3: the strip carries only figures the site can stand behind. Three of
+   BR-002.3: the strip carries only figures the site can stand behind. Two of
    them are derived from data this repository already owns (the agent roster, the
-   licence, the build targets). The fourth — the star count — is the one number
-   that lives elsewhere, so it is read from the GitHub API at render time and the
-   item is omitted entirely when that read fails, rather than showing a stale or
-   invented figure. */
+   build targets). The other two — the star count and the installer download total
+   — live elsewhere, so they are read from the GitHub API at render time and each
+   item is omitted entirely when its read fails, rather than showing a stale or
+   invented figure. The download total counts installer artefacts only, because
+   the updater artefacts every release also carries are update traffic rather than
+   installs. */
 
 import { agentCounts } from "./agents";
 import { site } from "./site";
@@ -14,7 +16,12 @@ import { requireCount } from "./validate";
 
 const API = "https://api.github.com/repos/takora-dev/bentomux-v2";
 
-export type StatIcon = "star" | "agents" | "platform" | "license";
+/** The artefact kinds a person installs from. The bundler's own updater assets
+ *  (`.app.tar.gz`, `latest.json`, `updater.json`, `sha256sums.txt`) must stay
+ *  out — see `fetchInstallerDownloadCount`. */
+const INSTALLER_ASSET = /\.(dmg|exe|msi|deb|rpm)$|AppImage$/i;
+
+export type StatIcon = "star" | "agents" | "platform" | "download";
 
 export type StatFact = {
   readonly id: string;
@@ -26,9 +33,9 @@ export type StatFact = {
   readonly external: boolean;
 };
 
-/** The three facts that need nothing fetched. The star count is inserted by
- *  `statFacts` when the API answers, so the strip is always honest about what
- *  it knows. */
+/** The two facts that need nothing fetched. The star count and the download
+ *  total are inserted by `statFacts` when the API answers, so the strip is always
+ *  honest about what it knows. */
 const staticFacts: readonly StatFact[] = [
   {
     id: "runtimes",
@@ -46,28 +53,32 @@ const staticFacts: readonly StatFact[] = [
     href: "#install",
     external: false,
   },
-  {
-    id: "license",
-    value: site.licenseId,
-    label: "open source license",
-    icon: "license",
-    href: site.licenseHref ?? site.repositoryUrl,
-    external: true,
-  },
 ] as const;
 
-/** The strip, in order, with the star item only when a real count was read. */
-export function statFacts(stars: number | null): readonly StatFact[] {
-  if (stars === null) return staticFacts;
-  const starFact: StatFact = {
-    id: "stars",
-    value: stars.toLocaleString("en-US"),
-    label: "GitHub stars",
-    icon: "star",
-    href: site.repositoryUrl,
-    external: true,
-  };
-  return [starFact, ...staticFacts];
+/** The strip, in order, with the fetched items only when a real count was read. */
+export function statFacts(stars: number | null, installs: number | null): readonly StatFact[] {
+  const fetched: StatFact[] = [];
+  if (stars !== null) {
+    fetched.push({
+      id: "stars",
+      value: stars.toLocaleString("en-US"),
+      label: "GitHub stars",
+      icon: "star",
+      href: site.repositoryUrl,
+      external: true,
+    });
+  }
+  if (installs !== null) {
+    fetched.push({
+      id: "downloads",
+      value: installs.toLocaleString("en-US"),
+      label: "installer downloads · GitHub releases",
+      icon: "download",
+      href: `${site.repositoryUrl}/releases`,
+      external: true,
+    });
+  }
+  return [...fetched, ...staticFacts];
 }
 
 export async function fetchLatestTag(): Promise<string | null> {
@@ -101,7 +112,43 @@ export async function fetchStarCount(): Promise<number | null> {
   }
 }
 
-requireCount(staticFacts, 3, "staticFacts");
+/** Sums `download_count` across the installer artefacts only — the `.dmg`,
+ *  `.exe`, `.msi`, `.deb`, `.rpm` and `.AppImage` a person actually installs
+ *  from. The updater artefacts each release also carries (`latest.json`,
+ *  `updater.json`, `sha256sums.txt`, `Bentomux.app.tar.gz`) are auto-update
+ *  traffic, not installs, and on this repository they outweigh the installers
+ *  roughly three to one, so counting them would claim a figure the data does not
+ *  support. Failure returns `null` and drops the item, same as the star count. */
+export async function fetchInstallerDownloadCount(): Promise<number | null> {
+  // ponytail: five pages of 100 releases is the cap; page deeper if Bentomux ever
+  // ships more than 500 releases.
+  try {
+    let total = 0;
+    for (let page = 1; page <= 5; page += 1) {
+      const response = await fetch(`${API}/releases?per_page=100&page=${page}`, {
+        headers: { accept: "application/vnd.github+json" },
+        next: { revalidate: 3600 },
+      });
+      if (!response.ok) return null;
+      const body: unknown = await response.json();
+      if (!Array.isArray(body)) return null;
+      for (const release of body as { assets?: unknown }[]) {
+        if (!Array.isArray(release.assets)) continue;
+        for (const asset of release.assets as { name?: unknown; download_count?: unknown }[]) {
+          if (typeof asset.name !== "string" || !INSTALLER_ASSET.test(asset.name)) continue;
+          const count = asset.download_count;
+          if (typeof count === "number" && Number.isFinite(count)) total += count;
+        }
+      }
+      if (body.length < 100) break;
+    }
+    return total;
+  } catch {
+    return null;
+  }
+}
+
+requireCount(staticFacts, 2, "staticFacts");
 
 /** The strip's own label. Rendered as a visually hidden heading so the list of
  *  figures is a named region rather than four orphaned numbers. */

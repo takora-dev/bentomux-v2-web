@@ -95,8 +95,12 @@ function validateStaticHtml(html) {
     !/src-tauri|src\/tauri|resources\/manifests/.test(html),
   );
   check(
-    "TC-F007-002 (amended): no issue, fork, contributor or install count is claimed",
-    !/\b\d[\d,.]*\s*(issues?|contributors?|forks?|installs?|downloads?|users?)\b/i.test(html),
+    "TC-F007-002 (amended 2026-11-02): no issue, fork, contributor or install count is claimed",
+    !/\b\d[\d,.]*\s*(issues?|contributors?|forks?|installs?|users?)\b/i.test(html),
+  );
+  check(
+    "TC-F007-002 (amended 2026-11-02): a download figure only ever names GitHub as its source",
+    !/\bdownloads?\b/i.test(html) || html.includes("installer downloads · GitHub releases"),
   );
   check(
     "ENT-015: whenever the page says stars, it says whose they are",

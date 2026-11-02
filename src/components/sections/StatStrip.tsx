@@ -3,13 +3,19 @@ import { statFacts, statStripCopy } from "@/content/stats";
 import { StarIcon } from "../ui/icons";
 
 /**
- * IA STR-001 / §9.3. Four figures, three of them owned by this repository and
- * one read from the GitHub API at render time (BR-002.3, ENT-015). The band
- * renders whatever `statFacts` returns: when the API did not answer, the strip
- * is three facts rather than four and nothing is invented to fill the gap.
+ * IA STR-001 / §9.3. Four figures, two of them owned by this repository and two
+ * read from the GitHub API at render time (BR-002.3, ENT-015). The band renders
+ * whatever `statFacts` returns: when the API did not answer, the strip is shorter
+ * and nothing is invented to fill the gap.
  */
-export function StatStrip({ stars }: { stars: number | null }) {
-  const facts = statFacts(stars);
+export function StatStrip({
+  stars,
+  downloads,
+}: {
+  stars: number | null;
+  downloads: number | null;
+}) {
+  const facts = statFacts(stars, downloads);
 
   return (
     <section aria-labelledby="stat-strip-heading" className="px-4 pb-14 lg:px-10 lg:pb-20">
